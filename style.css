@@ -97,6 +97,8 @@ button:disabled { background: #555; cursor: not-allowed; }
 .menu-option { width: 100%; text-align: left; padding: 0.8rem 1rem; }
 
 .map-panel { text-align: center; }
+.map-panel .hint { font-size: 0.8rem; color: #888; font-weight: normal; }
+.combat-panel .panel { margin: 0.5rem 0; }
 .map-grid {
   display: grid;
   grid-template-columns: repeat(10, 1.8rem);

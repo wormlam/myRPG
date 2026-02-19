@@ -29,30 +29,30 @@
     <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
   </div>
 
-  <div class="panel" id="enemyPanel" style="display:none">
-    <h3>敵人: <span id="enemyName">史萊姆</span></h3>
-    <div class="stats">
-      <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
-      <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
-    </div>
-    <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
-  </div>
-
-  <div class="panel map-panel">
-    <h3>地圖</h3>
+  <div id="mapPanel" class="panel map-panel">
+    <h3>地圖 <span class="hint">(WASD 移動)</span></h3>
     <div id="mapGrid" class="map-grid"></div>
     <div class="move-controls">
-      <button id="btnUp">↑</button>
+      <button id="btnUp">W</button>
       <div class="move-row">
-        <button id="btnLeft">←</button>
+        <button id="btnLeft">A</button>
         <span class="move-center"></span>
-        <button id="btnRight">→</button>
+        <button id="btnRight">D</button>
       </div>
-      <button id="btnDown">↓</button>
+      <button id="btnDown">S</button>
     </div>
   </div>
 
-  <div class="panel">
+  <div id="combatPanel" class="panel combat-panel" style="display:none">
+    <h3>戰鬥指令</h3>
+    <div class="panel" id="enemyPanel">
+      <h3>敵人: <span id="enemyName">史萊姆</span></h3>
+      <div class="stats">
+        <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
+        <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
+      </div>
+      <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
+    </div>
     <button id="btnHeal">💚 治療 (5金)</button>
   </div>
 

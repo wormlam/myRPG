@@ -15,18 +15,20 @@ const UISystem = {
     $('playerExpBar').style.width = (player.exp / expNeed * 100) + '%';
 
     if (enemy) {
-      $('enemyPanel').style.display = 'block';
+      $('mapPanel').style.display = 'none';
+      $('combatPanel').style.display = 'block';
       $('enemyName').textContent = enemy.name;
       $('enemyHp').textContent = enemy.hp;
       $('enemyMaxHp').textContent = enemy.maxHp;
       $('enemyAtk').textContent = enemy.atk;
       $('enemyHpBar').style.width = (enemy.hp / enemy.maxHp * 100) + '%';
     } else {
-      $('enemyPanel').style.display = 'none';
+      $('mapPanel').style.display = 'block';
+      $('combatPanel').style.display = 'none';
     }
 
     document.querySelectorAll('.move-controls button').forEach(b => { if (b) b.disabled = GameState.inCombat; });
-    $('btnHeal').disabled = GameState.inCombat || player.gold < 5 || player.hp >= player.maxHp;
+    $('btnHeal').disabled = player.gold < 5 || player.hp >= player.maxHp;
     if ($('btnMenu')) $('btnMenu').disabled = GameState.inCombat;
 
     MapSystem.render();
