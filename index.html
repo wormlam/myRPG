@@ -21,13 +21,17 @@
       <h3>冒險者</h3>
       <div class="stats">
         <span class="stat">Lv.<span id="playerLevel">1</span></span>
-        <span class="stat">HP: <span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
         <span class="stat">攻擊: <span id="playerAtk">5</span></span>
         <span class="stat">金幣: <span id="gold">0</span></span>
-        <span class="stat">經驗: <span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
       </div>
-      <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
-      <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
+      <div class="stat-with-bar">
+        <span class="stat">HP: <span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
+        <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
+      </div>
+      <div class="stat-with-bar">
+        <span class="stat">經驗: <span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
+        <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
+      </div>
     </div>
   </aside>
   <main class="game-main">
