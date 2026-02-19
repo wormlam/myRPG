@@ -68,7 +68,7 @@ button:disabled { background: #555; cursor: not-allowed; }
 .game-layout {
   display: flex;
   gap: 1rem;
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
 }
 .sidebar {
@@ -88,6 +88,12 @@ button:disabled { background: #555; cursor: not-allowed; }
   text-align: left;
 }
 .game-main { flex: 1; min-width: 0; }
+.player-panel {
+  flex-shrink: 0;
+  width: 140px;
+}
+.player-panel .stats { flex-direction: column; }
+.player-panel .stat { width: 100%; }
 
 .modal {
   display: none;
