@@ -46,8 +46,14 @@ const UISystem = {
       if (pMpBar && (player.maxMp ?? 10) > 0) {
         pMpBar.style.setProperty('width', Math.max(0, Math.min(100, ((player.mp ?? 0) / (player.maxMp ?? 10)) * 100)) + '%', 'important');
       }
-      const btnMagic = $('btnMagic');
-      if (btnMagic) btnMagic.disabled = (player.mp ?? 0) < RPG.MAGIC_MP_COST;
+      document.querySelectorAll('.spell-btn').forEach(btn => {
+        const spell = SPELLS.find(s => s.id === btn.dataset.spell);
+        if (spell) {
+          const canUse = player.level >= spell.level && (player.mp ?? 0) >= spell.mp;
+          btn.disabled = !canUse;
+          btn.title = `Lv.${spell.level} ${spell.name} ${spell.mp}MP${!canUse ? ' (未解鎖或MP不足)' : ''}`;
+        }
+      });
     } else {
       $('mapPanel').style.display = 'block';
       $('combatPanel').style.display = 'none';

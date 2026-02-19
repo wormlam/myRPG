@@ -4,7 +4,6 @@
     const key = e.key.toLowerCase();
     if (GameState.inCombat) {
       if (key === 'z') { e.preventDefault(); CombatSystem.doAttack(); }
-      else if (key === 'x') { e.preventDefault(); CombatSystem.doMagic(); }
       else if (key === 'c') { e.preventDefault(); CombatSystem.doDefend(); }
       else if (key === 'v') { e.preventDefault(); CombatSystem.doEscape(); }
       return;
@@ -19,9 +18,11 @@
 
   $('playerNameBtn').onclick = () => $('playerPanel').classList.toggle('expanded');
   $('btnAttack').onclick = () => CombatSystem.doAttack();
-  $('btnMagic').onclick = () => CombatSystem.doMagic();
   $('btnDefend').onclick = () => CombatSystem.doDefend();
   $('btnEscape').onclick = () => CombatSystem.doEscape();
+  document.querySelectorAll('.spell-btn').forEach(btn => {
+    btn.onclick = () => CombatSystem.doSpell(btn.dataset.spell);
+  });
   $('btnStartGame').onclick = startNewGame;
   $('btnLoadStart').onclick = () => UISystem.showSlotModal('load', true);
   $('menuHeal').onclick = () => CombatSystem.heal();

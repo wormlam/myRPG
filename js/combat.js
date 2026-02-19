@@ -53,7 +53,7 @@ const CombatSystem = {
   startFight() {
     if (GameState.inCombat) return;
     const base = enemies[Math.floor(Math.random() * enemies.length)];
-    GameState.enemy = { ...base, maxHp: base.hp };
+    GameState.enemy = { ...base, maxHp: base.hp, frozen: false };
     GameState.inCombat = true;
     log(`遇到 ${GameState.enemy.name}！`, 'damage');
     UISystem.update();
@@ -68,6 +68,12 @@ const CombatSystem = {
   enemyAttack(defending = false) {
     const { player, enemy } = GameState;
     if (!enemy) return;
+    if (enemy.frozen) {
+      enemy.frozen = false;
+      log(`${enemy.name} 被凍結，無法行動！`, 'heal');
+      UISystem.update();
+      return;
+    }
     const playerSprite = document.getElementById('playerSprite');
     const enemySprite = document.getElementById('enemySprite');
     enemySprite.classList.add('animate-attack');
@@ -123,20 +129,44 @@ const CombatSystem = {
     });
   },
 
-  doMagic() {
+  doSpell(spellId) {
     const { player, enemy } = GameState;
-    if (!enemy || player.hp <= 0) return;
-    if (player.mp < RPG.MAGIC_MP_COST) {
-      log('MP 不足，無法施放魔法', 'damage');
+    const spell = SPELLS.find(s => s.id === spellId);
+    if (!spell || player.hp <= 0) return;
+    if (player.level < spell.level) {
+      log(`需要 Lv.${spell.level} 才能使用 ${spell.name}`, 'damage');
+      return;
+    }
+    if (player.mp < spell.mp) {
+      log(`MP 不足（需要 ${spell.mp}）`, 'damage');
       return;
     }
 
+    if (spell.type === 'heal') {
+      if (!enemy) return;
+      playAnimation('magic', () => {
+        player.mp -= spell.mp;
+        const healAmt = Math.min(spell.amount, player.maxHp - player.hp);
+        player.hp += healAmt;
+        log(`${spell.name} 恢復 ${healAmt} HP（消耗 ${spell.mp} MP）`, 'heal');
+        UISystem.update();
+        this.enemyAttack(false);
+      });
+      return;
+    }
+
+    if (!enemy) return;
     playAnimation('magic', () => {
-      player.mp -= RPG.MAGIC_MP_COST;
-      const baseDmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
-      const dmg = Math.max(1, Math.floor(baseDmg * RPG.MAGIC_DAMAGE_MULTIPLIER) + Math.floor(Math.random() * 3));
+      player.mp -= spell.mp;
+      const base = Math.max(1, player.atk - Math.floor(Math.random() * 2));
+      let dmg = Math.max(1, Math.floor(base * spell.mult) + Math.floor(Math.random() * (spell.bonus + 1)));
       enemy.hp -= dmg;
-      log(`魔法攻擊造成 ${dmg} 點傷害（消耗 ${RPG.MAGIC_MP_COST} MP）`, 'heal');
+      let msg = `${spell.name} 造成 ${dmg} 點傷害（消耗 ${spell.mp} MP）`;
+      if (spell.freezeChance && Math.random() < spell.freezeChance) {
+        enemy.frozen = true;
+        msg += '，敵人被凍結！';
+      }
+      log(msg, 'heal');
       UISystem.update();
 
       if (enemy.hp <= 0) {

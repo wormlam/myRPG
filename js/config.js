@@ -5,9 +5,15 @@ const RPG = {
   ENCOUNTER_CHANCE: 0.25,
   ESCAPE_CHANCE: 0.6,
   DEFEND_DAMAGE_REDUCE: 0.5,
-  MAGIC_MP_COST: 3,
-  MAGIC_DAMAGE_MULTIPLIER: 2,
 };
+
+const SPELLS = [
+  { id: 'fireball', name: '火球術', level: 1, mp: 3, type: 'attack', mult: 2, bonus: 2, effect: '燃燒' },
+  { id: 'icearrow', name: '冰箭術', level: 2, mp: 2, type: 'attack', mult: 1.5, bonus: 0, freezeChance: 0.25, effect: '凍結' },
+  { id: 'thunder', name: '雷擊術', level: 3, mp: 4, type: 'attack', mult: 2.5, bonus: 5, effect: '雷擊' },
+  { id: 'rockbreak', name: '破岩術', level: 4, mp: 5, type: 'attack', mult: 3, bonus: 0, effect: '破甲' },
+  { id: 'heal', name: '治癒術', level: 2, mp: 5, type: 'heal', amount: 15, effect: '回復' }
+];
 
 const defaultPlayer = () => ({
   level: 1, exp: 0, hp: 20, maxHp: 20, mp: 10, maxMp: 10, atk: 5, gold: 0, px: 5, py: 5

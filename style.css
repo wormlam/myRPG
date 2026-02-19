@@ -348,6 +348,17 @@ button:disabled { background: #555; cursor: not-allowed; }
 .combat-panel .panel { margin: 0.5rem 0; }
 .combat-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
 .combat-actions button { flex: 1; min-width: 80px; }
+.combat-spells { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.spell-btn {
+  flex: 1;
+  min-width: 70px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+  background: #4a2c6a;
+  border: 1px solid rgba(155, 89, 182, 0.5);
+}
+.spell-btn:hover:not(:disabled) { background: #5a3c7a; }
+.spell-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .map-grid {
   display: grid;
   grid-template-columns: repeat(10, 1.8rem);
