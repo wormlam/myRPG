@@ -59,6 +59,7 @@
     .damage { color: #ff6b6b; }
     .heal { color: #4ecca3; }
     .gold { color: #ffd700; }
+    .levelup { color: #ffd700; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -67,11 +68,14 @@
   <div class="panel">
     <h3>冒險者</h3>
     <div class="stats">
+      <span class="stat">Lv.<span id="playerLevel">1</span></span>
       <span class="stat">HP: <span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
       <span class="stat">攻擊: <span id="playerAtk">5</span></span>
       <span class="stat">金幣: <span id="gold">0</span></span>
+      <span class="stat">經驗: <span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
     </div>
     <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
+    <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
   </div>
 
   <div class="panel" id="enemyPanel" style="display:none">
@@ -95,12 +99,12 @@
 
   <script>
     const player = {
-      hp: 20, maxHp: 20, atk: 5, gold: 0
+      level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0
     };
     const enemies = [
-      { name: '史萊姆', hp: 8, atk: 2, gold: 3 },
-      { name: '哥布林', hp: 12, atk: 3, gold: 5 },
-      { name: '骷髏兵', hp: 15, atk: 4, gold: 8 }
+      { name: '史萊姆', hp: 8, atk: 2, gold: 3, exp: 5 },
+      { name: '哥布林', hp: 12, atk: 3, gold: 5, exp: 8 },
+      { name: '骷髏兵', hp: 15, atk: 4, gold: 8, exp: 12 }
     ];
     let enemy = null;
     let inCombat = false;
@@ -114,12 +118,32 @@
       $('log').prepend(div);
     }
 
+    function getExpNeed() { return player.level * 10; }
+
+    function checkLevelUp() {
+      const need = getExpNeed();
+      if (player.exp >= need) {
+        player.exp -= need;
+        player.level++;
+        player.maxHp += 5;
+        player.atk += 2;
+        player.hp = player.maxHp;
+        log(`🎉 升級！Lv.${player.level} - HP+5、攻擊+2、HP 全滿`, 'levelup');
+        if (player.exp >= getExpNeed()) checkLevelUp();
+      }
+    }
+
     function updateUI() {
+      const expNeed = getExpNeed();
+      $('playerLevel').textContent = player.level;
       $('playerHp').textContent = player.hp;
       $('playerMaxHp').textContent = player.maxHp;
       $('playerAtk').textContent = player.atk;
       $('gold').textContent = player.gold;
+      $('playerExp').textContent = player.exp;
+      $('playerExpNeed').textContent = expNeed;
       $('playerHpBar').style.width = (player.hp / player.maxHp * 100) + '%';
+      $('playerExpBar').style.width = (player.exp / expNeed * 100) + '%';
 
       if (enemy) {
         $('enemyPanel').style.display = 'block';
@@ -154,7 +178,9 @@
 
       if (enemy.hp <= 0) {
         player.gold += enemy.gold;
-        log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣`, 'gold');
+        player.exp += enemy.exp;
+        log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣、${enemy.exp} 經驗`, 'gold');
+        checkLevelUp();
         enemy = null;
         inCombat = false;
         updateUI();
