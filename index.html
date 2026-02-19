@@ -10,29 +10,7 @@
   <div id="startScreen">
     <h1 class="title">⚔️ 簡易 RPG</h1>
     <button class="menu-btn" id="btnStartGame">開始遊戲</button>
-    <div class="panel load-slots">
-      <h3>讀取進度</h3>
-      <div class="load-slot" data-slot="0">
-        <span class="slot-info" id="startSlotInfo0">空</span>
-        <button class="btn-load-start" disabled>讀取</button>
-      </div>
-      <div class="load-slot" data-slot="1">
-        <span class="slot-info" id="startSlotInfo1">空</span>
-        <button class="btn-load-start" disabled>讀取</button>
-      </div>
-      <div class="load-slot" data-slot="2">
-        <span class="slot-info" id="startSlotInfo2">空</span>
-        <button class="btn-load-start" disabled>讀取</button>
-      </div>
-      <div class="load-slot" data-slot="3">
-        <span class="slot-info" id="startSlotInfo3">空</span>
-        <button class="btn-load-start" disabled>讀取</button>
-      </div>
-      <div class="load-slot" data-slot="4">
-        <span class="slot-info" id="startSlotInfo4">空</span>
-        <button class="btn-load-start" disabled>讀取</button>
-      </div>
-    </div>
+    <button class="menu-btn" id="btnLoadStart">讀取</button>
   </div>
 
   <div id="gameScreen">
@@ -67,52 +45,22 @@
 
   <div class="panel">
     <button id="btnNewGame">🔄 開始新遊戲</button>
-  </div>
-  <div class="panel">
-    <h3>儲存空間 (5 格)</h3>
-    <div class="save-slots">
-      <div class="save-slot" data-slot="0">
-        <span class="slot-info" id="slotInfo0">空</span>
-        <div class="slot-btns">
-          <button class="btn-save">儲存</button>
-          <button class="btn-load">讀取</button>
-        </div>
-      </div>
-      <div class="save-slot" data-slot="1">
-        <span class="slot-info" id="slotInfo1">空</span>
-        <div class="slot-btns">
-          <button class="btn-save">儲存</button>
-          <button class="btn-load">讀取</button>
-        </div>
-      </div>
-      <div class="save-slot" data-slot="2">
-        <span class="slot-info" id="slotInfo2">空</span>
-        <div class="slot-btns">
-          <button class="btn-save">儲存</button>
-          <button class="btn-load">讀取</button>
-        </div>
-      </div>
-      <div class="save-slot" data-slot="3">
-        <span class="slot-info" id="slotInfo3">空</span>
-        <div class="slot-btns">
-          <button class="btn-save">儲存</button>
-          <button class="btn-load">讀取</button>
-        </div>
-      </div>
-      <div class="save-slot" data-slot="4">
-        <span class="slot-info" id="slotInfo4">空</span>
-        <div class="slot-btns">
-          <button class="btn-save">儲存</button>
-          <button class="btn-load">讀取</button>
-        </div>
-      </div>
-    </div>
+    <button id="btnSave">💾 儲存</button>
+    <button id="btnLoad">📂 讀取</button>
   </div>
 
   <div class="panel">
     <h3>戰鬥紀錄</h3>
     <div id="log"></div>
   </div>
+  </div>
+
+  <div id="slotModal" class="modal">
+    <div class="modal-content">
+      <h3 id="slotModalTitle">選擇欄位</h3>
+      <div class="modal-slots" id="modalSlots"></div>
+      <button class="modal-close" id="btnCloseModal">關閉</button>
+    </div>
   </div>
 
   <script src="script.js"></script>

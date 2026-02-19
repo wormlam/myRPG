@@ -64,9 +64,32 @@ button:disabled { background: #555; cursor: not-allowed; }
 #startScreen { text-align: center; padding: 2rem 0; }
 #startScreen .title { font-size: 2rem; margin-bottom: 2rem; }
 #startScreen .menu-btn { display: block; width: 100%; max-width: 280px; margin: 1rem auto; padding: 1rem 2rem; font-size: 1.2rem; }
-#startScreen .load-slots { margin-top: 2rem; text-align: left; }
-#startScreen .load-slot {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #0f3460; padding: 0.5rem 1rem; border-radius: 6px; margin: 0.5rem 0;
-}
 #gameScreen { display: none; }
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+}
+.modal-slots { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.modal-slot {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #0f3460; padding: 0.6rem 1rem; border-radius: 6px;
+  cursor: pointer;
+}
+.modal-slot:hover { background: #1a3a6e; }
+.modal-slot .slot-info { font-size: 0.9rem; color: #aaa; }
+.modal-slot .slot-action { padding: 0.3rem 0.8rem; font-size: 0.85rem; }
+.modal-close { width: 100%; margin-top: 0.5rem; }

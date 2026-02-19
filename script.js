@@ -58,8 +58,8 @@ function updateUI() {
 
   $('btnFight').disabled = inCombat;
   $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
-  document.querySelectorAll('.btn-save, .btn-load').forEach(b => b.disabled = inCombat);
-  updateSlotInfos();
+  if ($('btnSave')) $('btnSave').disabled = inCombat;
+  if ($('btnLoad')) $('btnLoad').disabled = inCombat;
 }
 
 function getSlotInfo(i) {
@@ -71,16 +71,41 @@ function getSlotInfo(i) {
   } catch { return { text: '損壞', color: '#e94560', hasData: false }; }
 }
 
-function updateSlotInfos() {
-  for (let i = 0; i < 5; i++) {
-    const info = getSlotInfo(i);
-    const el = $('slotInfo' + i);
-    if (el) { el.textContent = info.text; el.style.color = info.color; }
-    const startEl = $('startSlotInfo' + i);
-    if (startEl) { startEl.textContent = info.text; startEl.style.color = info.color; }
-    const loadBtn = document.querySelector(`.load-slot[data-slot="${i}"] .btn-load-start`);
-    if (loadBtn) loadBtn.disabled = !info.hasData;
+function showSlotModal(mode, fromStart = false) {
+  const modal = $('slotModal');
+  const title = $('slotModalTitle');
+  const container = $('modalSlots');
+  container.innerHTML = '';
+  if (mode === 'save') {
+    title.textContent = '選擇儲存欄位';
+    for (let i = 0; i < 5; i++) {
+      const info = getSlotInfo(i);
+      const div = document.createElement('div');
+      div.className = 'modal-slot';
+      div.dataset.slotId = i;
+      div.innerHTML = `<span class="slot-info">${info.text}</span><button class="slot-action">儲存</button>`;
+      div.onclick = () => { saveGame(i); modal.classList.remove('show'); };
+      container.appendChild(div);
+    }
+  } else {
+    title.textContent = '選擇讀取欄位';
+    for (let i = 0; i < 5; i++) {
+      const info = getSlotInfo(i);
+      const div = document.createElement('div');
+      div.className = 'modal-slot';
+      div.dataset.slotId = i;
+      div.innerHTML = `<span class="slot-info">${info.text}</span><button class="slot-action" ${!info.hasData ? 'disabled' : ''}>讀取</button>`;
+      if (info.hasData) {
+        div.onclick = () => {
+          if (fromStart) loadAndEnter(i);
+          else loadGame(i);
+          modal.classList.remove('show');
+        };
+      }
+      container.appendChild(div);
+    }
   }
+  modal.classList.add('show');
 }
 
 function enterGame() {
@@ -205,14 +230,9 @@ function loadAndEnter(slot) {
 $('btnFight').onclick = startFight;
 $('btnHeal').onclick = heal;
 $('btnNewGame').onclick = newGame;
-document.querySelectorAll('.save-slot').forEach(slotEl => {
-  const slot = +slotEl.dataset.slot;
-  slotEl.querySelector('.btn-save').onclick = () => saveGame(slot);
-  slotEl.querySelector('.btn-load').onclick = () => loadGame(slot);
-});
 $('btnStartGame').onclick = startNewGame;
-document.querySelectorAll('.load-slot').forEach(slotEl => {
-  const slot = +slotEl.dataset.slot;
-  slotEl.querySelector('.btn-load-start').onclick = () => loadAndEnter(slot);
-});
-updateSlotInfos();
+$('btnLoadStart').onclick = () => showSlotModal('load', true);
+$('btnSave').onclick = () => showSlotModal('save');
+$('btnLoad').onclick = () => showSlotModal('load', false);
+$('btnCloseModal').onclick = () => $('slotModal').classList.remove('show');
+$('slotModal').onclick = (e) => { if (e.target.id === 'slotModal') e.target.classList.remove('show'); };
