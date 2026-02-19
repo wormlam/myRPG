@@ -60,6 +60,14 @@
     .heal { color: #4ecca3; }
     .gold { color: #ffd700; }
     .levelup { color: #ffd700; font-weight: bold; }
+    .save-slots { display: flex; flex-direction: column; gap: 0.5rem; }
+    .save-slot {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #0f3460; padding: 0.5rem 1rem; border-radius: 6px;
+    }
+    .slot-info { font-size: 0.9rem; color: #aaa; min-width: 140px; }
+    .slot-btns { display: flex; gap: 0.3rem; }
+    .slot-btns button { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -94,8 +102,46 @@
 
   <div class="panel">
     <button id="btnNewGame">🔄 開始新遊戲</button>
-    <button id="btnSave">💾 儲存</button>
-    <button id="btnLoad">📂 讀取</button>
+  </div>
+  <div class="panel">
+    <h3>儲存空間 (5 格)</h3>
+    <div class="save-slots">
+      <div class="save-slot" data-slot="0">
+        <span class="slot-info" id="slotInfo0">空</span>
+        <div class="slot-btns">
+          <button class="btn-save">儲存</button>
+          <button class="btn-load">讀取</button>
+        </div>
+      </div>
+      <div class="save-slot" data-slot="1">
+        <span class="slot-info" id="slotInfo1">空</span>
+        <div class="slot-btns">
+          <button class="btn-save">儲存</button>
+          <button class="btn-load">讀取</button>
+        </div>
+      </div>
+      <div class="save-slot" data-slot="2">
+        <span class="slot-info" id="slotInfo2">空</span>
+        <div class="slot-btns">
+          <button class="btn-save">儲存</button>
+          <button class="btn-load">讀取</button>
+        </div>
+      </div>
+      <div class="save-slot" data-slot="3">
+        <span class="slot-info" id="slotInfo3">空</span>
+        <div class="slot-btns">
+          <button class="btn-save">儲存</button>
+          <button class="btn-load">讀取</button>
+        </div>
+      </div>
+      <div class="save-slot" data-slot="4">
+        <span class="slot-info" id="slotInfo4">空</span>
+        <div class="slot-btns">
+          <button class="btn-save">儲存</button>
+          <button class="btn-load">讀取</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="panel">
@@ -104,7 +150,7 @@
   </div>
 
   <script>
-    const SAVE_KEY = 'myrpg_save';
+    const SAVE_KEY_PREFIX = 'myrpg_save_';
     const defaultPlayer = () => ({ level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0 });
     const player = { ...defaultPlayer() };
     const enemies = [
@@ -164,8 +210,21 @@
 
       $('btnFight').disabled = inCombat;
       $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
-      $('btnSave').disabled = inCombat;
-      $('btnLoad').disabled = inCombat;
+      document.querySelectorAll('.btn-save, .btn-load').forEach(b => b.disabled = inCombat);
+      updateSlotInfos();
+    }
+
+    function updateSlotInfos() {
+      for (let i = 0; i < 5; i++) {
+        const raw = localStorage.getItem(SAVE_KEY_PREFIX + i);
+        const el = $('slotInfo' + i);
+        if (!raw) { el.textContent = '空'; el.style.color = '#666'; continue; }
+        try {
+          const d = JSON.parse(raw);
+          el.textContent = `Lv.${d.player?.level || '?'} | ${d.player?.gold ?? '?'}金 | ${(d.savedAt || '').slice(0, 16)}`;
+          el.style.color = '#4ecca3';
+        } catch { el.textContent = '損壞'; el.style.color = '#e94560'; }
+      }
     }
 
     function startFight() {
@@ -232,25 +291,25 @@
       updateUI();
     }
 
-    function saveGame() {
+    function saveGame(slot) {
       if (inCombat) return;
       const data = { player: { ...player }, savedAt: new Date().toLocaleString('zh-TW') };
-      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-      log('遊戲已儲存', 'heal');
+      localStorage.setItem(SAVE_KEY_PREFIX + slot, JSON.stringify(data));
+      log(`已儲存至欄位 ${slot + 1}`, 'heal');
       updateUI();
     }
 
-    function loadGame() {
+    function loadGame(slot) {
       if (inCombat) return;
-      const raw = localStorage.getItem(SAVE_KEY);
-      if (!raw) { log('沒有存檔', 'damage'); return; }
+      const raw = localStorage.getItem(SAVE_KEY_PREFIX + slot);
+      if (!raw) { log(`欄位 ${slot + 1} 沒有存檔`, 'damage'); return; }
       try {
         const data = JSON.parse(raw);
         Object.assign(player, data.player);
         enemy = null;
         inCombat = false;
         $('log').innerHTML = '';
-        log(`已讀取存檔 (${data.savedAt || '未知時間'})`, 'heal');
+        log(`已讀取欄位 ${slot + 1} (${data.savedAt || '未知時間'})`, 'heal');
         updateUI();
       } catch (e) {
         log('讀取存檔失敗', 'damage');
@@ -260,8 +319,11 @@
     $('btnFight').onclick = startFight;
     $('btnHeal').onclick = heal;
     $('btnNewGame').onclick = newGame;
-    $('btnSave').onclick = saveGame;
-    $('btnLoad').onclick = loadGame;
+    document.querySelectorAll('.save-slot').forEach(slotEl => {
+      const slot = +slotEl.dataset.slot;
+      slotEl.querySelector('.btn-save').onclick = () => saveGame(slot);
+      slotEl.querySelector('.btn-load').onclick = () => loadGame(slot);
+    });
     updateUI();
     log('歡迎！點擊「戰鬥」開始冒險');
   </script>
