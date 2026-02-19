@@ -1,8 +1,13 @@
 /** 主程式：初始化與事件綁定 */
 (function init() {
   document.addEventListener('keydown', (e) => {
-    if (GameState.inCombat) return;
     const key = e.key.toLowerCase();
+    if (GameState.inCombat) {
+      if (key === 'a') { e.preventDefault(); CombatSystem.doAttack(); }
+      else if (key === 's') { e.preventDefault(); CombatSystem.doDefend(); }
+      else if (key === 'd') { e.preventDefault(); CombatSystem.doEscape(); }
+      return;
+    }
     if (key === 'w' || e.key === 'ArrowUp') { e.preventDefault(); MapSystem.tryMove(0, -1); }
     else if (key === 's' || e.key === 'ArrowDown') { e.preventDefault(); MapSystem.tryMove(0, 1); }
     else if (key === 'a' || e.key === 'ArrowLeft') { e.preventDefault(); MapSystem.tryMove(-1, 0); }
