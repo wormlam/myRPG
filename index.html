@@ -56,17 +56,9 @@
 
   <div id="combatPanel" class="panel combat-panel" style="display:none">
     <h3>戰鬥指令</h3>
+    <p class="target-hint" id="targetHint" style="display:none;color:#ffd700;font-size:0.9rem;margin:0.3rem 0"></p>
     <div class="combat-scene">
-      <div class="combat-sprite combat-enemy" id="enemySprite">
-        <div class="enemy-nameplate">
-          <span class="nameplate-name" id="enemyName">史萊姆</span>
-          <span class="nameplate-stats">HP <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span> · 攻 <span id="enemyAtk">2</span> 防 <span id="enemyDef">0</span></span>
-        </div>
-        <div class="enemy-hp-bar">
-          <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#e94560"></div></div>
-        </div>
-        <span class="sprite-emoji" id="enemyEmoji">🟢</span>
-      </div>
+      <div class="enemies-container" id="enemiesContainer"></div>
       <div class="combat-sprite combat-player" id="playerSprite">
         <div class="player-nameplate">
           <span class="nameplate-name" id="combatPlayerName">冒險者</span>
@@ -86,6 +78,7 @@
       <button id="btnMagic">✨ 魔法 (X)</button>
       <button id="btnDefend">🛡️ 防禦 (C)</button>
       <button id="btnEscape">🏃 逃跑 (V)</button>
+      <button id="btnCancelTarget" class="cancel-target" style="display:none">取消選擇</button>
     </div>
     <div class="combat-spells" id="combatSpells">
       <button class="spell-btn" id="spellFireball" data-spell="fireball" title="Lv.1 火球術 3MP">🔥 火球術 (1)</button>

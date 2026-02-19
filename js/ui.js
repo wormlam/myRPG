@@ -1,7 +1,7 @@
 /** 介面與模態視窗 */
 const UISystem = {
   update() {
-    const { player, enemy } = GameState;
+    const { player, enemies, targeting } = GameState;
     const expNeed = CombatSystem.getExpNeed();
 
     $('playerLevel').textContent = player.level;
@@ -18,22 +18,34 @@ const UISystem = {
     $('playerMpBar').style.width = ((player.mp ?? 0) / (player.maxMp ?? 10) * 100) + '%';
     $('playerExpBar').style.width = (player.exp / expNeed * 100) + '%';
 
-    if (enemy) {
+    if (enemies.length > 0) {
       $('mapPanel').style.display = 'none';
       $('combatPanel').style.display = 'block';
       $('logPanel').style.display = 'block';
-      $('enemyName').textContent = enemy.name;
-      $('enemyEmoji').textContent = enemy.emoji || '👹';
+
+      const container = $('enemiesContainer');
+      container.innerHTML = '';
+      enemies.forEach(enemy => {
+        const slot = document.createElement('div');
+        slot.className = 'enemy-slot' + (enemy.hp <= 0 ? ' dead' : '') + (targeting ? ' targetable' : '');
+        slot.dataset.idx = enemy.idx;
+        slot.innerHTML = `
+          <div class="enemy-nameplate">
+            <span class="nameplate-name">${enemy.name}</span>
+            <span class="nameplate-stats">HP <span class="enemy-hp-val">${enemy.hp}</span>/<span class="enemy-maxhp-val">${enemy.maxHp}</span> · 攻 ${enemy.atk} 防 ${enemy.def ?? 0}</span>
+          </div>
+          <div class="enemy-hp-bar">
+            <div class="hp-bar"><div class="hp-fill enemy-hp-fill" style="width:${Math.max(0, (enemy.hp / enemy.maxHp) * 100)}%;background:#e94560"></div></div>
+          </div>
+          <div class="enemy-emoji-wrap">${enemy.emoji || '👹'}</div>
+        `;
+        if (enemy.hp > 0 && targeting) {
+          slot.onclick = () => CombatSystem.onEnemyTargetClick(enemy.idx);
+        }
+        container.appendChild(slot);
+      });
+
       $('playerEmoji').textContent = PLAYER_EMOJI;
-      $('enemyHp').textContent = enemy.hp;
-      $('enemyMaxHp').textContent = enemy.maxHp;
-      $('enemyAtk').textContent = enemy.atk;
-      $('enemyDef').textContent = enemy.def ?? 0;
-      const bar = $('enemyHpBar');
-      if (bar && enemy.maxHp > 0) {
-        const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
-        bar.style.setProperty('width', hpPct + '%', 'important');
-      }
       $('combatPlayerName').textContent = '冒險者';
       $('combatPlayerHp').textContent = player.hp;
       $('combatPlayerMaxHp').textContent = player.maxHp;
@@ -53,10 +65,24 @@ const UISystem = {
         const spell = SPELLS.find(s => s.id === btn.dataset.spell);
         if (spell) {
           const canUse = player.level >= spell.level && (player.mp ?? 0) >= spell.mp;
-          btn.disabled = !canUse;
-          btn.title = `Lv.${spell.level} ${spell.name} ${spell.mp}MP${!canUse ? ' (未解鎖或MP不足)' : ''}`;
+          btn.disabled = !canUse || !!targeting;
+          btn.title = `Lv.${spell.level} ${spell.name} ${spell.mp}MP${targeting ? ' (請先選擇目標或取消)' : !canUse ? ' (未解鎖或MP不足)' : ''}`;
         }
       });
+      ['btnAttack','btnMagic','btnDefend'].forEach(id => {
+        const btn = $(id);
+        if (btn) btn.disabled = !!targeting;
+      });
+      const targetHint = $('targetHint');
+      const btnCancel = $('btnCancelTarget');
+      if (targetHint) {
+        targetHint.textContent = targeting ? (targeting === 'attack' ? '選擇攻擊目標（按 V 取消）' : `選擇 ${SPELLS.find(s => s.id === targeting)?.name || ''} 目標（按 V 取消）`) : '';
+        targetHint.style.display = targeting ? 'block' : 'none';
+      }
+      if (btnCancel) {
+        btnCancel.style.display = targeting ? 'inline-block' : 'none';
+        btnCancel.onclick = () => { clearTargeting(); UISystem.update(); };
+      }
     } else {
       $('mapPanel').style.display = 'block';
       $('combatPanel').style.display = 'none';

@@ -5,7 +5,11 @@
     if (GameState.inCombat) {
       const spellsEl = $('combatSpells');
       const spellsVisible = spellsEl && spellsEl.classList.contains('show');
-      if (key === 'z') { e.preventDefault(); CombatSystem.doAttack(); }
+      if (GameState.targeting) {
+        if (key === 'v' || key === 'escape') { e.preventDefault(); clearTargeting(); UISystem.update(); }
+        return;
+      }
+      if (key === 'z') { e.preventDefault(); CombatSystem.doAttackClick(); }
       else if (key === 'x') { e.preventDefault(); $('combatSpells').classList.toggle('show'); }
       else if (key === 'c') { e.preventDefault(); CombatSystem.doDefend(); }
       else if (key === 'v') { e.preventDefault(); CombatSystem.doEscape(); }
@@ -25,10 +29,13 @@
   window.addEventListener('encounter', () => CombatSystem.startFight());
 
   $('playerNameBtn').onclick = () => $('playerPanel').classList.toggle('expanded');
-  $('btnAttack').onclick = () => CombatSystem.doAttack();
+  $('btnAttack').onclick = () => CombatSystem.doAttackClick();
   $('btnMagic').onclick = () => $('combatSpells').classList.toggle('show');
   $('btnDefend').onclick = () => CombatSystem.doDefend();
-  $('btnEscape').onclick = () => CombatSystem.doEscape();
+  $('btnEscape').onclick = () => {
+    if (GameState.targeting) { clearTargeting(); UISystem.update(); }
+    else CombatSystem.doEscape();
+  };
   document.querySelectorAll('.spell-btn').forEach(btn => {
     btn.onclick = () => CombatSystem.doSpell(btn.dataset.spell);
   });

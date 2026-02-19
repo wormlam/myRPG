@@ -1,12 +1,14 @@
 /** 遊戲狀態 */
 const GameState = {
   player: { ...defaultPlayer() },
-  enemy: null,
+  enemies: [],
   inCombat: false,
+  targeting: null,
 
   reset() {
     Object.assign(this.player, defaultPlayer());
-    this.enemy = null;
+    this.enemies = [];
+    this.targeting = null;
     this.inCombat = false;
   },
 
@@ -14,7 +16,8 @@ const GameState = {
     Object.assign(this.player, defaultPlayer(), data);
     this.player.px = this.player.px ?? 5;
     this.player.py = this.player.py ?? 5;
-    this.enemy = null;
+    this.enemies = [];
+    this.targeting = null;
     this.inCombat = false;
   }
 };

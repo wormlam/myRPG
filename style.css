@@ -208,13 +208,47 @@ button:disabled { background: #555; cursor: not-allowed; }
   margin: 1rem 0;
   min-height: 120px;
 }
+.enemies-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+.enemy-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: default;
+  transition: all 0.2s;
+}
+.enemy-slot.targetable {
+  cursor: pointer;
+  border: 2px solid rgba(233, 69, 96, 0.6);
+  background: rgba(233, 69, 96, 0.15);
+}
+.enemy-slot.targetable:hover {
+  background: rgba(233, 69, 96, 0.3);
+  transform: scale(1.05);
+}
+.enemy-slot.dead {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.enemy-emoji-wrap {
+  font-size: 3rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
 .combat-sprite {
   display: flex;
   flex-direction: column;
   align-items: center;
   flex: 1;
 }
-.combat-enemy { align-items: center; }
 .combat-player { align-items: flex-end; }
 .sprite-emoji {
   font-size: 4rem;
@@ -341,13 +375,15 @@ button:disabled { background: #555; cursor: not-allowed; }
 }
 .combat-sprite.animate-attack .sprite-emoji { animation: attack-player 0.4s ease-out; }
 .combat-sprite.animate-magic .sprite-emoji { animation: magic-player 0.5s ease-out; }
-.combat-enemy.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
+.combat-enemy.animate-hit .sprite-emoji,
+.enemy-emoji-wrap.animate-hit { animation: attack-enemy 0.4s ease-out; }
 .combat-player.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
 .combat-sprite.animate-defend .sprite-emoji { animation: defend 0.5s ease-out; }
 .combat-sprite.animate-escape .sprite-emoji { animation: escape 0.4s ease-out; }
 .combat-panel .panel { margin: 0.5rem 0; }
 .combat-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
 .combat-actions button { flex: 1; min-width: 80px; }
+.combat-actions .cancel-target { flex: none; background: #555; }
 .combat-spells {
   display: none;
   flex-wrap: wrap;
