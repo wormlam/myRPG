@@ -68,9 +68,47 @@
     .slot-info { font-size: 0.9rem; color: #aaa; min-width: 140px; }
     .slot-btns { display: flex; gap: 0.3rem; }
     .slot-btns button { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    #startScreen { text-align: center; padding: 2rem 0; }
+    #startScreen .title { font-size: 2rem; margin-bottom: 2rem; }
+    #startScreen .menu-btn { display: block; width: 100%; max-width: 280px; margin: 1rem auto; padding: 1rem 2rem; font-size: 1.2rem; }
+    #startScreen .load-slots { margin-top: 2rem; text-align: left; }
+    #startScreen .load-slot {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #0f3460; padding: 0.5rem 1rem; border-radius: 6px; margin: 0.5rem 0;
+    }
+    #gameScreen { display: none; }
   </style>
 </head>
 <body>
+  <div id="startScreen">
+    <h1 class="title">⚔️ 簡易 RPG</h1>
+    <button class="menu-btn" id="btnStartGame">開始遊戲</button>
+    <div class="panel load-slots">
+      <h3>讀取進度</h3>
+      <div class="load-slot" data-slot="0">
+        <span class="slot-info" id="startSlotInfo0">空</span>
+        <button class="btn-load-start" disabled>讀取</button>
+      </div>
+      <div class="load-slot" data-slot="1">
+        <span class="slot-info" id="startSlotInfo1">空</span>
+        <button class="btn-load-start" disabled>讀取</button>
+      </div>
+      <div class="load-slot" data-slot="2">
+        <span class="slot-info" id="startSlotInfo2">空</span>
+        <button class="btn-load-start" disabled>讀取</button>
+      </div>
+      <div class="load-slot" data-slot="3">
+        <span class="slot-info" id="startSlotInfo3">空</span>
+        <button class="btn-load-start" disabled>讀取</button>
+      </div>
+      <div class="load-slot" data-slot="4">
+        <span class="slot-info" id="startSlotInfo4">空</span>
+        <button class="btn-load-start" disabled>讀取</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameScreen">
   <h1>⚔️ 簡易 RPG</h1>
 
   <div class="panel">
@@ -148,6 +186,7 @@
     <h3>戰鬥紀錄</h3>
     <div id="log"></div>
   </div>
+  </div>
 
   <script>
     const SAVE_KEY_PREFIX = 'myrpg_save_';
@@ -214,17 +253,30 @@
       updateSlotInfos();
     }
 
+    function getSlotInfo(i) {
+      const raw = localStorage.getItem(SAVE_KEY_PREFIX + i);
+      if (!raw) return { text: '空', color: '#666', hasData: false };
+      try {
+        const d = JSON.parse(raw);
+        return { text: `Lv.${d.player?.level || '?'} | ${d.player?.gold ?? '?'}金 | ${(d.savedAt || '').slice(0, 16)}`, color: '#4ecca3', hasData: true };
+      } catch { return { text: '損壞', color: '#e94560', hasData: false }; }
+    }
+
     function updateSlotInfos() {
       for (let i = 0; i < 5; i++) {
-        const raw = localStorage.getItem(SAVE_KEY_PREFIX + i);
+        const info = getSlotInfo(i);
         const el = $('slotInfo' + i);
-        if (!raw) { el.textContent = '空'; el.style.color = '#666'; continue; }
-        try {
-          const d = JSON.parse(raw);
-          el.textContent = `Lv.${d.player?.level || '?'} | ${d.player?.gold ?? '?'}金 | ${(d.savedAt || '').slice(0, 16)}`;
-          el.style.color = '#4ecca3';
-        } catch { el.textContent = '損壞'; el.style.color = '#e94560'; }
+        if (el) { el.textContent = info.text; el.style.color = info.color; }
+        const startEl = $('startSlotInfo' + i);
+        if (startEl) { startEl.textContent = info.text; startEl.style.color = info.color; }
+        const loadBtn = document.querySelector(`.load-slot[data-slot="${i}"] .btn-load-start`);
+        if (loadBtn) loadBtn.disabled = !info.hasData;
       }
+    }
+
+    function enterGame() {
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'block';
     }
 
     function startFight() {
@@ -316,6 +368,31 @@
       }
     }
 
+    function startNewGame() {
+      Object.assign(player, defaultPlayer());
+      enemy = null;
+      inCombat = false;
+      $('log').innerHTML = '';
+      log('歡迎！點擊「戰鬥」開始冒險');
+      enterGame();
+      updateUI();
+    }
+
+    function loadAndEnter(slot) {
+      const raw = localStorage.getItem(SAVE_KEY_PREFIX + slot);
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        Object.assign(player, data.player);
+        enemy = null;
+        inCombat = false;
+        $('log').innerHTML = '';
+        log(`已讀取欄位 ${slot + 1} (${data.savedAt || '未知時間'})`, 'heal');
+        enterGame();
+        updateUI();
+      } catch (e) {}
+    }
+
     $('btnFight').onclick = startFight;
     $('btnHeal').onclick = heal;
     $('btnNewGame').onclick = newGame;
@@ -324,8 +401,12 @@
       slotEl.querySelector('.btn-save').onclick = () => saveGame(slot);
       slotEl.querySelector('.btn-load').onclick = () => loadGame(slot);
     });
-    updateUI();
-    log('歡迎！點擊「戰鬥」開始冒險');
+    $('btnStartGame').onclick = startNewGame;
+    document.querySelectorAll('.load-slot').forEach(slotEl => {
+      const slot = +slotEl.dataset.slot;
+      slotEl.querySelector('.btn-load-start').onclick = () => loadAndEnter(slot);
+    });
+    updateSlotInfos();
   </script>
 </body>
 </html>
