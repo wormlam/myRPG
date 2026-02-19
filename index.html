@@ -50,7 +50,7 @@
   <div id="mapPanel" class="panel map-panel">
     <h3>地圖</h3>
     <div id="mapGrid" class="map-grid"></div>
-    <p class="move-hint">移動：方向鍵或 WASD｜戰鬥：Z 攻擊 C 防禦 V 逃跑｜魔法：點擊按鈕</p>
+    <p class="move-hint">移動：方向鍵或 WASD｜戰鬥：Z 攻擊 X 魔法 C 防禦 V 逃跑</p>
   </div>
 
   <div id="combatPanel" class="panel combat-panel" style="display:none">
@@ -82,10 +82,11 @@
     </div>
     <div class="combat-actions">
       <button id="btnAttack">⚔️ 攻擊 (Z)</button>
+      <button id="btnMagic">✨ 魔法 (X)</button>
       <button id="btnDefend">🛡️ 防禦 (C)</button>
       <button id="btnEscape">🏃 逃跑 (V)</button>
     </div>
-    <div class="combat-spells">
+    <div class="combat-spells" id="combatSpells">
       <button class="spell-btn" id="spellFireball" data-spell="fireball" title="Lv.1 火球術 3MP">🔥 火球術</button>
       <button class="spell-btn" id="spellIcearrow" data-spell="icearrow" title="Lv.2 冰箭術 2MP">❄️ 冰箭術</button>
       <button class="spell-btn" id="spellThunder" data-spell="thunder" title="Lv.3 雷擊術 4MP">⚡ 雷擊術</button>

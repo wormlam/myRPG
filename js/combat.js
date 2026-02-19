@@ -55,6 +55,8 @@ const CombatSystem = {
     const base = enemies[Math.floor(Math.random() * enemies.length)];
     GameState.enemy = { ...base, maxHp: base.hp, frozen: false };
     GameState.inCombat = true;
+    const spellsEl = document.getElementById('combatSpells');
+    if (spellsEl) spellsEl.classList.remove('show');
     log(`遇到 ${GameState.enemy.name}！`, 'damage');
     UISystem.update();
   },

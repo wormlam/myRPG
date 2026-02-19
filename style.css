@@ -348,7 +348,15 @@ button:disabled { background: #555; cursor: not-allowed; }
 .combat-panel .panel { margin: 0.5rem 0; }
 .combat-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
 .combat-actions button { flex: 1; min-width: 80px; }
-.combat-spells { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.combat-spells {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.combat-spells.show { display: flex; }
 .spell-btn {
   flex: 1;
   min-width: 70px;
