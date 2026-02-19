@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', sans-serif;
-  max-width: 500px;
+  max-width: 620px;
   margin: 2rem auto;
   padding: 1rem;
   background: #1a1a2e;
@@ -65,6 +65,29 @@ button:disabled { background: #555; cursor: not-allowed; }
 #startScreen .title { font-size: 2rem; margin-bottom: 2rem; }
 #startScreen .menu-btn { display: block; width: 100%; max-width: 280px; margin: 1rem auto; padding: 1rem 2rem; font-size: 1.2rem; }
 #gameScreen { display: none; }
+.game-layout {
+  display: flex;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.sidebar {
+  flex-shrink: 0;
+  width: 120px;
+  background: #16213e;
+  border-radius: 8px;
+  padding: 1rem;
+}
+.sidebar h3 { margin: 0 0 0.8rem 0; font-size: 1rem; }
+.sidebar .menu-option {
+  display: block;
+  width: 100%;
+  margin: 0.3rem 0;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  text-align: left;
+}
+.game-main { flex: 1; min-width: 0; }
 
 .modal {
   display: none;

@@ -20,13 +20,10 @@
   $('btnEscape').onclick = () => CombatSystem.doEscape();
   $('btnStartGame').onclick = startNewGame;
   $('btnLoadStart').onclick = () => UISystem.showSlotModal('load', true);
-  $('btnMenu').onclick = () => UISystem.showGameMenu();
-  $('menuHeal').onclick = () => { UISystem.hideGameMenu(); CombatSystem.heal(); };
-  $('menuSave').onclick = () => { UISystem.hideGameMenu(); UISystem.showSlotModal('save'); };
-  $('menuLoad').onclick = () => { UISystem.hideGameMenu(); UISystem.showSlotModal('load', false); };
-  $('menuBack').onclick = () => { UISystem.hideGameMenu(); UISystem.backToMenu(); };
-  $('btnCloseGameMenu').onclick = () => UISystem.hideGameMenu();
-  $('gameMenuModal').onclick = (e) => { if (e.target.id === 'gameMenuModal') UISystem.hideGameMenu(); };
+  $('menuHeal').onclick = () => CombatSystem.heal();
+  $('menuSave').onclick = () => UISystem.showSlotModal('save');
+  $('menuLoad').onclick = () => UISystem.showSlotModal('load', false);
+  $('menuBack').onclick = () => UISystem.backToMenu();
   $('btnCloseModal').onclick = () => $('slotModal').classList.remove('show');
   $('slotModal').onclick = (e) => { if (e.target.id === 'slotModal') e.target.classList.remove('show'); };
 })();

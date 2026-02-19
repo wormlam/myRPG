@@ -38,14 +38,6 @@ const UISystem = {
     MapSystem.render();
   },
 
-  showGameMenu() {
-    $('gameMenuModal').classList.add('show');
-  },
-
-  hideGameMenu() {
-    $('gameMenuModal').classList.remove('show');
-  },
-
   showSlotModal(mode, fromStart = false) {
     const modal = $('slotModal');
     const title = $('slotModalTitle');
@@ -93,6 +85,5 @@ const UISystem = {
     document.getElementById('startScreen').style.display = 'block';
     document.getElementById('gameScreen').style.display = 'none';
     $('slotModal').classList.remove('show');
-    this.hideGameMenu();
   }
 };

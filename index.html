@@ -13,7 +13,15 @@
     <button class="menu-btn" id="btnLoadStart">讀取</button>
   </div>
 
-  <div id="gameScreen">
+  <div id="gameScreen" class="game-layout">
+  <aside class="sidebar">
+    <h3>選單</h3>
+    <button class="menu-option" id="menuHeal">💚 治療 (5金)</button>
+    <button class="menu-option" id="menuSave">💾 儲存</button>
+    <button class="menu-option" id="menuLoad">📂 讀取</button>
+    <button class="menu-option" id="menuBack">🏠 返回主畫面</button>
+  </aside>
+  <main class="game-main">
   <h1>⚔️ 簡易 RPG</h1>
 
   <div class="panel">
@@ -61,26 +69,10 @@
   </div>
 
   <div class="panel">
-    <button id="btnMenu">📋 選單</button>
-  </div>
-
-  <div class="panel">
     <h3>戰鬥紀錄</h3>
     <div id="log"></div>
   </div>
-  </div>
-
-  <div id="gameMenuModal" class="modal">
-    <div class="modal-content">
-      <h3>選單</h3>
-      <div class="menu-options">
-        <button class="menu-option" id="menuHeal">💚 治療 (5金)</button>
-        <button class="menu-option" id="menuSave">💾 儲存</button>
-        <button class="menu-option" id="menuLoad">📂 讀取</button>
-        <button class="menu-option" id="menuBack">🏠 返回主畫面</button>
-      </div>
-      <button class="modal-close" id="btnCloseGameMenu">關閉</button>
-    </div>
+  </main>
   </div>
 
   <div id="slotModal" class="modal">
