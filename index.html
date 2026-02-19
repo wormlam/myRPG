@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>簡易 RPG</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+    }
+    h1 { text-align: center; color: #e94560; }
+    .panel {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .stat { background: #0f3460; padding: 0.5rem 1rem; border-radius: 6px; }
+    .hp-bar {
+      height: 20px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    .hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #e94560, #ff6b6b);
+      transition: width 0.3s;
+    }
+    button {
+      background: #e94560;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 0.3rem;
+    }
+    button:hover { background: #ff6b6b; }
+    button:disabled { background: #555; cursor: not-allowed; }
+    #log {
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .log-entry { margin: 0.2rem 0; }
+    .damage { color: #ff6b6b; }
+    .heal { color: #4ecca3; }
+    .gold { color: #ffd700; }
+  </style>
+</head>
+<body>
+  <h1>⚔️ 簡易 RPG</h1>
+
+  <div class="panel">
+    <h3>冒險者</h3>
+    <div class="stats">
+      <span class="stat">HP: <span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
+      <span class="stat">攻擊: <span id="playerAtk">5</span></span>
+      <span class="stat">金幣: <span id="gold">0</span></span>
+    </div>
+    <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
+  </div>
+
+  <div class="panel" id="enemyPanel" style="display:none">
+    <h3>敵人: <span id="enemyName">史萊姆</span></h3>
+    <div class="stats">
+      <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
+      <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
+    </div>
+    <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
+  </div>
+
+  <div class="panel">
+    <button id="btnFight">⚔️ 戰鬥</button>
+    <button id="btnHeal">💚 治療 (5金)</button>
+  </div>
+
+  <div class="panel">
+    <h3>戰鬥紀錄</h3>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const player = {
+      hp: 20, maxHp: 20, atk: 5, gold: 0
+    };
+    const enemies = [
+      { name: '史萊姆', hp: 8, atk: 2, gold: 3 },
+      { name: '哥布林', hp: 12, atk: 3, gold: 5 },
+      { name: '骷髏兵', hp: 15, atk: 4, gold: 8 }
+    ];
+    let enemy = null;
+    let inCombat = false;
+
+    const $ = id => document.getElementById(id);
+
+    function log(msg, type = '') {
+      const div = document.createElement('div');
+      div.className = 'log-entry ' + type;
+      div.textContent = msg;
+      $('log').prepend(div);
+    }
+
+    function updateUI() {
+      $('playerHp').textContent = player.hp;
+      $('playerMaxHp').textContent = player.maxHp;
+      $('playerAtk').textContent = player.atk;
+      $('gold').textContent = player.gold;
+      $('playerHpBar').style.width = (player.hp / player.maxHp * 100) + '%';
+
+      if (enemy) {
+        $('enemyPanel').style.display = 'block';
+        $('enemyName').textContent = enemy.name;
+        $('enemyHp').textContent = enemy.hp;
+        $('enemyMaxHp').textContent = enemy.maxHp;
+        $('enemyAtk').textContent = enemy.atk;
+        $('enemyHpBar').style.width = (enemy.hp / enemy.maxHp * 100) + '%';
+      } else {
+        $('enemyPanel').style.display = 'none';
+      }
+
+      $('btnFight').disabled = inCombat;
+      $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
+    }
+
+    function startFight() {
+      if (inCombat) return;
+      enemy = { ...enemies[Math.floor(Math.random() * enemies.length)] };
+      inCombat = true;
+      log(`遇到 ${enemy.name}！`, 'damage');
+      updateUI();
+      combatTurn();
+    }
+
+    function combatTurn() {
+      if (!enemy || player.hp <= 0) return;
+
+      const dmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
+      enemy.hp -= dmg;
+      log(`你攻擊造成 ${dmg} 點傷害`, 'damage');
+
+      if (enemy.hp <= 0) {
+        player.gold += enemy.gold;
+        log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣`, 'gold');
+        enemy = null;
+        inCombat = false;
+        updateUI();
+        return;
+      }
+
+      const enemyDmg = Math.max(1, enemy.atk - Math.floor(Math.random() * 2));
+      player.hp -= enemyDmg;
+      log(`${enemy.name} 攻擊造成 ${enemyDmg} 點傷害`, 'damage');
+
+      if (player.hp <= 0) {
+        player.hp = 0;
+        log('你被擊敗了！遊戲結束', 'damage');
+        inCombat = false;
+        enemy = null;
+        updateUI();
+        return;
+      }
+
+      updateUI();
+      setTimeout(combatTurn, 800);
+    }
+
+    function heal() {
+      if (player.gold >= 5 && player.hp < player.maxHp && !inCombat) {
+        player.gold -= 5;
+        player.hp = Math.min(player.maxHp, player.hp + 10);
+        log('治療恢復 10 HP', 'heal');
+        updateUI();
+      }
+    }
+
+    $('btnFight').onclick = startFight;
+    $('btnHeal').onclick = heal;
+    updateUI();
+    log('歡迎！點擊「戰鬥」開始冒險');
+  </script>
+</body>
+</html>
