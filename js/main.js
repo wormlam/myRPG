@@ -3,9 +3,10 @@
   document.addEventListener('keydown', (e) => {
     const key = e.key.toLowerCase();
     if (GameState.inCombat) {
-      if (key === 'a') { e.preventDefault(); CombatSystem.doAttack(); }
-      else if (key === 's') { e.preventDefault(); CombatSystem.doDefend(); }
-      else if (key === 'd') { e.preventDefault(); CombatSystem.doEscape(); }
+      if (key === 'z') { e.preventDefault(); CombatSystem.doAttack(); }
+      else if (key === 'x') { e.preventDefault(); CombatSystem.doMagic(); }
+      else if (key === 'c') { e.preventDefault(); CombatSystem.doDefend(); }
+      else if (key === 'v') { e.preventDefault(); CombatSystem.doEscape(); }
       return;
     }
     if (key === 'w' || e.key === 'ArrowUp') { e.preventDefault(); MapSystem.tryMove(0, -1); }
@@ -17,6 +18,7 @@
   window.addEventListener('encounter', () => CombatSystem.startFight());
 
   $('btnAttack').onclick = () => CombatSystem.doAttack();
+  $('btnMagic').onclick = () => CombatSystem.doMagic();
   $('btnDefend').onclick = () => CombatSystem.doDefend();
   $('btnEscape').onclick = () => CombatSystem.doEscape();
   $('btnStartGame').onclick = startNewGame;

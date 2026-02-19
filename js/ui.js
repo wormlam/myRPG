@@ -12,6 +12,9 @@ const UISystem = {
     $('playerExp').textContent = player.exp;
     $('playerExpNeed').textContent = expNeed;
     $('playerHpBar').style.width = (player.hp / player.maxHp * 100) + '%';
+    $('playerMp').textContent = player.mp ?? 0;
+    $('playerMaxMp').textContent = player.maxMp ?? 10;
+    $('playerMpBar').style.width = ((player.mp ?? 0) / (player.maxMp ?? 10) * 100) + '%';
     $('playerExpBar').style.width = (player.exp / expNeed * 100) + '%';
 
     if (enemy) {
@@ -24,7 +27,27 @@ const UISystem = {
       $('enemyHp').textContent = enemy.hp;
       $('enemyMaxHp').textContent = enemy.maxHp;
       $('enemyAtk').textContent = enemy.atk;
-      $('enemyHpBar').style.width = (enemy.hp / enemy.maxHp * 100) + '%';
+      const bar = $('enemyHpBar');
+      if (bar && enemy.maxHp > 0) {
+        const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
+        bar.style.setProperty('width', hpPct + '%', 'important');
+      }
+      $('combatPlayerName').textContent = '冒險者';
+      $('combatPlayerHp').textContent = player.hp;
+      $('combatPlayerMaxHp').textContent = player.maxHp;
+      $('combatPlayerMp').textContent = player.mp ?? 0;
+      $('combatPlayerMaxMp').textContent = player.maxMp ?? 10;
+      $('combatPlayerAtk').textContent = player.atk;
+      const pHpBar = $('combatPlayerHpBar');
+      if (pHpBar && player.maxHp > 0) {
+        pHpBar.style.setProperty('width', Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100)) + '%', 'important');
+      }
+      const pMpBar = $('combatPlayerMpBar');
+      if (pMpBar && (player.maxMp ?? 10) > 0) {
+        pMpBar.style.setProperty('width', Math.max(0, Math.min(100, ((player.mp ?? 0) / (player.maxMp ?? 10)) * 100)) + '%', 'important');
+      }
+      const btnMagic = $('btnMagic');
+      if (btnMagic) btnMagic.disabled = (player.mp ?? 0) < RPG.MAGIC_MP_COST;
     } else {
       $('mapPanel').style.display = 'block';
       $('combatPanel').style.display = 'none';

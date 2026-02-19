@@ -29,6 +29,10 @@
         <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
       </div>
       <div class="stat-with-bar">
+        <span class="stat">MP: <span id="playerMp">10</span>/<span id="playerMaxMp">10</span></span>
+        <div class="hp-bar"><div class="hp-fill" id="playerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
+      </div>
+      <div class="stat-with-bar">
         <span class="stat">經驗: <span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
         <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
       </div>
@@ -38,31 +42,41 @@
   <div id="mapPanel" class="panel map-panel">
     <h3>地圖</h3>
     <div id="mapGrid" class="map-grid"></div>
-    <p class="move-hint">移動：方向鍵或 WASD｜戰鬥：A 攻擊 S 防禦 D 逃跑</p>
+    <p class="move-hint">移動：方向鍵或 WASD｜戰鬥：Z 攻擊 X 魔法 C 防禦 V 逃跑</p>
   </div>
 
   <div id="combatPanel" class="panel combat-panel" style="display:none">
     <h3>戰鬥指令</h3>
     <div class="combat-scene">
       <div class="combat-sprite combat-enemy" id="enemySprite">
-        <div class="panel sprite-info sprite-info-above">
-          <h3>敵人: <span id="enemyName">史萊姆</span></h3>
-          <div class="stats">
-            <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
-            <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
-          </div>
-          <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
+        <div class="enemy-nameplate">
+          <span class="nameplate-name" id="enemyName">史萊姆</span>
+          <span class="nameplate-stats">HP <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span> · 攻 <span id="enemyAtk">2</span></span>
+        </div>
+        <div class="enemy-hp-bar">
+          <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#e94560"></div></div>
         </div>
         <span class="sprite-emoji" id="enemyEmoji">🟢</span>
       </div>
       <div class="combat-sprite combat-player" id="playerSprite">
+        <div class="player-nameplate">
+          <span class="nameplate-name" id="combatPlayerName">冒險者</span>
+          <span class="nameplate-stats">HP <span id="combatPlayerHp">20</span>/<span id="combatPlayerMaxHp">20</span> · MP <span id="combatPlayerMp">10</span>/<span id="combatPlayerMaxMp">10</span> · 攻 <span id="combatPlayerAtk">5</span></span>
+        </div>
+        <div class="player-hp-bar">
+          <div class="hp-bar"><div class="hp-fill" id="combatPlayerHpBar" style="width:100%"></div></div>
+        </div>
+        <div class="player-mp-bar">
+          <div class="hp-bar"><div class="hp-fill" id="combatPlayerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
+        </div>
         <span class="sprite-emoji" id="playerEmoji">🧑</span>
       </div>
     </div>
     <div class="combat-actions">
-      <button id="btnAttack">⚔️ 攻擊 (A)</button>
-      <button id="btnDefend">🛡️ 防禦 (S)</button>
-      <button id="btnEscape">🏃 逃跑 (D)</button>
+      <button id="btnAttack">⚔️ 攻擊 (Z)</button>
+      <button id="btnMagic">✨ 魔法 (X)</button>
+      <button id="btnDefend">🛡️ 防禦 (C)</button>
+      <button id="btnEscape">🏃 逃跑 (V)</button>
     </div>
   </div>
 

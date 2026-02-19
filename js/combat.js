@@ -2,10 +2,10 @@
 function playAnimation(type, callback) {
   const playerSprite = document.getElementById('playerSprite');
   const enemySprite = document.getElementById('enemySprite');
-  playerSprite.classList.remove('animate-attack', 'animate-defend', 'animate-escape', 'animate-hit');
+  playerSprite.classList.remove('animate-attack', 'animate-defend', 'animate-escape', 'animate-magic', 'animate-hit');
   enemySprite.classList.remove('animate-hit');
-  if (type === 'attack') {
-    playerSprite.classList.add('animate-attack');
+  if (type === 'attack' || type === 'magic') {
+    playerSprite.classList.add(type === 'magic' ? 'animate-magic' : 'animate-attack');
     setTimeout(() => {
       enemySprite.classList.add('animate-hit');
       setTimeout(() => {
@@ -41,16 +41,19 @@ const CombatSystem = {
       player.exp -= need;
       player.level++;
       player.maxHp += 5;
+      player.maxMp += 3;
       player.atk += 2;
       player.hp = player.maxHp;
-      log(`🎉 升級！Lv.${player.level} - HP+5、攻擊+2、HP 全滿`, 'levelup');
+      player.mp = player.maxMp;
+      log(`🎉 升級！Lv.${player.level} - HP+5、MP+3、攻擊+2、HP/MP 全滿`, 'levelup');
       if (player.exp >= this.getExpNeed()) this.checkLevelUp();
     }
   },
 
   startFight() {
     if (GameState.inCombat) return;
-    GameState.enemy = { ...enemies[Math.floor(Math.random() * enemies.length)] };
+    const base = enemies[Math.floor(Math.random() * enemies.length)];
+    GameState.enemy = { ...base, maxHp: base.hp };
     GameState.inCombat = true;
     log(`遇到 ${GameState.enemy.name}！`, 'damage');
     UISystem.update();
@@ -96,6 +99,7 @@ const CombatSystem = {
       const dmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
       enemy.hp -= dmg;
       log(`你攻擊造成 ${dmg} 點傷害`, 'damage');
+      UISystem.update();
 
       if (enemy.hp <= 0) {
         player.gold += enemy.gold;
@@ -116,6 +120,34 @@ const CombatSystem = {
     playAnimation('defend', () => {
       log('你採取防禦姿態', 'heal');
       this.enemyAttack(true);
+    });
+  },
+
+  doMagic() {
+    const { player, enemy } = GameState;
+    if (!enemy || player.hp <= 0) return;
+    if (player.mp < RPG.MAGIC_MP_COST) {
+      log('MP 不足，無法施放魔法', 'damage');
+      return;
+    }
+
+    playAnimation('magic', () => {
+      player.mp -= RPG.MAGIC_MP_COST;
+      const baseDmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
+      const dmg = Math.max(1, Math.floor(baseDmg * RPG.MAGIC_DAMAGE_MULTIPLIER) + Math.floor(Math.random() * 3));
+      enemy.hp -= dmg;
+      log(`魔法攻擊造成 ${dmg} 點傷害（消耗 ${RPG.MAGIC_MP_COST} MP）`, 'heal');
+      UISystem.update();
+
+      if (enemy.hp <= 0) {
+        player.gold += enemy.gold;
+        player.exp += enemy.exp;
+        log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣、${enemy.exp} 經驗`, 'gold');
+        this.checkLevelUp();
+        this.endCombat();
+        return;
+      }
+      this.enemyAttack(false);
     });
   },
 

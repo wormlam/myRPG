@@ -163,7 +163,7 @@ button:disabled { background: #555; cursor: not-allowed; }
   align-items: center;
   flex: 1;
 }
-.combat-enemy { align-items: flex-start; }
+.combat-enemy { align-items: center; }
 .combat-player { align-items: flex-end; }
 .sprite-emoji {
   font-size: 4rem;
@@ -173,6 +173,96 @@ button:disabled { background: #555; cursor: not-allowed; }
 .sprite-info { margin-top: 0.5rem; width: 100%; max-width: 140px; }
 .sprite-info-above { margin-top: 0; margin-bottom: 0.5rem; }
 .sprite-info .panel { margin: 0; }
+.enemy-nameplate {
+  position: relative;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(15, 52, 96, 0.95);
+  border: 1px solid rgba(78, 204, 163, 0.4);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  min-width: 90px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.enemy-nameplate::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(15, 52, 96, 0.95);
+}
+.nameplate-name { display: block; font-weight: bold; color: #4ecca3; margin-bottom: 0.15rem; }
+.nameplate-stats { color: #aaa; font-size: 0.65rem; }
+.enemy-hp-bar {
+  width: 100%;
+  max-width: 100px;
+  margin: 0.25rem 0;
+}
+.enemy-hp-bar .hp-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(233, 69, 96, 0.4);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+.enemy-hp-bar .hp-fill {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+.player-nameplate {
+  position: relative;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(15, 52, 96, 0.95);
+  border: 1px solid rgba(233, 69, 96, 0.4);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  min-width: 90px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.player-nameplate::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(15, 52, 96, 0.95);
+}
+.player-nameplate .nameplate-name { color: #e94560; }
+.player-nameplate .nameplate-stats { color: #aaa; font-size: 0.65rem; }
+.player-hp-bar, .player-mp-bar {
+  width: 100%;
+  max-width: 100px;
+  margin: 0.15rem 0;
+}
+.player-hp-bar .hp-bar, .player-mp-bar .hp-bar {
+  display: block;
+  width: 100%;
+  height: 5px;
+  background: #222;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.player-hp-bar .hp-bar { border: 1px solid rgba(233, 69, 96, 0.4); }
+.player-mp-bar .hp-bar { border: 1px solid rgba(155, 89, 182, 0.4); }
+.player-hp-bar .hp-fill, .player-mp-bar .hp-fill {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  transition: width 0.3s;
+  border-radius: 2px;
+}
 @keyframes attack-player {
   0% { transform: translateX(0) scale(1); }
   50% { transform: translateX(30px) scale(1.1); }
@@ -192,7 +282,14 @@ button:disabled { background: #555; cursor: not-allowed; }
   0% { transform: translateX(0) scale(1); opacity: 1; }
   100% { transform: translateX(40px) scale(0.9); opacity: 0.7; }
 }
+@keyframes magic-player {
+  0% { transform: translateX(0) scale(1); filter: none; }
+  30% { transform: translateX(25px) scale(1.15); filter: drop-shadow(0 0 12px rgba(138, 43, 226, 0.9)); }
+  70% { transform: translateX(25px) scale(1.1); filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.7)); }
+  100% { transform: translateX(0) scale(1); filter: none; }
+}
 .combat-sprite.animate-attack .sprite-emoji { animation: attack-player 0.4s ease-out; }
+.combat-sprite.animate-magic .sprite-emoji { animation: magic-player 0.5s ease-out; }
 .combat-enemy.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
 .combat-player.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
 .combat-sprite.animate-defend .sprite-emoji { animation: defend 0.5s ease-out; }

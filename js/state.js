@@ -11,7 +11,7 @@ const GameState = {
   },
 
   loadFromSave(data) {
-    Object.assign(this.player, data);
+    Object.assign(this.player, defaultPlayer(), data);
     this.player.px = this.player.px ?? 5;
     this.player.py = this.player.py ?? 5;
     this.enemy = null;
