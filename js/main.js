@@ -3,10 +3,17 @@
   document.addEventListener('keydown', (e) => {
     const key = e.key.toLowerCase();
     if (GameState.inCombat) {
+      const spellsEl = $('combatSpells');
+      const spellsVisible = spellsEl && spellsEl.classList.contains('show');
       if (key === 'z') { e.preventDefault(); CombatSystem.doAttack(); }
       else if (key === 'x') { e.preventDefault(); $('combatSpells').classList.toggle('show'); }
       else if (key === 'c') { e.preventDefault(); CombatSystem.doDefend(); }
       else if (key === 'v') { e.preventDefault(); CombatSystem.doEscape(); }
+      else if (spellsVisible && ['1','2','3','4','5'].includes(key)) {
+        e.preventDefault();
+        const spellIds = ['fireball','icearrow','thunder','rockbreak','heal'];
+        CombatSystem.doSpell(spellIds[parseInt(key) - 1]);
+      }
       return;
     }
     if (key === 'w' || e.key === 'ArrowUp') { e.preventDefault(); MapSystem.tryMove(0, -1); }
