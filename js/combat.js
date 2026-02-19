@@ -1,4 +1,9 @@
 /** 戰鬥系統 */
+function hideCombatSpells() {
+  const el = document.getElementById('combatSpells');
+  if (el) el.classList.remove('show');
+}
+
 function playAnimation(type, callback) {
   const playerSprite = document.getElementById('playerSprite');
   const enemySprite = document.getElementById('enemySprite');
@@ -102,6 +107,7 @@ const CombatSystem = {
   doAttack() {
     const { player, enemy } = GameState;
     if (!enemy || player.hp <= 0) return;
+    hideCombatSpells();
 
     playAnimation('attack', () => {
       const dmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
@@ -124,6 +130,7 @@ const CombatSystem = {
   doDefend() {
     const { player, enemy } = GameState;
     if (!enemy || player.hp <= 0) return;
+    hideCombatSpells();
 
     playAnimation('defend', () => {
       log('你採取防禦姿態', 'heal');
@@ -143,6 +150,7 @@ const CombatSystem = {
       log(`MP 不足（需要 ${spell.mp}）`, 'damage');
       return;
     }
+    hideCombatSpells();
 
     if (spell.type === 'heal') {
       if (!enemy) return;
@@ -186,6 +194,7 @@ const CombatSystem = {
   doEscape() {
     const { enemy } = GameState;
     if (!enemy) return;
+    hideCombatSpells();
 
     playAnimation('escape', () => {
       if (Math.random() < RPG.ESCAPE_CHANCE) {
@@ -201,6 +210,7 @@ const CombatSystem = {
   heal() {
     const { player } = GameState;
     if (player.gold >= 5 && player.hp < player.maxHp && GameState.inCombat) {
+      hideCombatSpells();
       player.gold -= 5;
       player.hp = Math.min(player.maxHp, player.hp + 10);
       log('治療恢復 10 HP', 'heal');
