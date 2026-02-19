@@ -140,6 +140,19 @@ button:disabled { background: #555; cursor: not-allowed; }
 .player-panel-compact.expanded .player-name-arrow {
   transform: rotate(180deg);
 }
+.player-gold {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.gold-label { color: #aaa; }
+.gold-value { color: #ffd700; font-weight: bold; }
 .player-details {
   display: none;
   margin-top: 0.5rem;
