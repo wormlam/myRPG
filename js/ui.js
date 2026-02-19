@@ -17,6 +17,7 @@ const UISystem = {
     if (enemy) {
       $('mapPanel').style.display = 'none';
       $('combatPanel').style.display = 'block';
+      $('logPanel').style.display = 'block';
       $('enemyName').textContent = enemy.name;
       $('enemyHp').textContent = enemy.hp;
       $('enemyMaxHp').textContent = enemy.maxHp;
@@ -25,6 +26,7 @@ const UISystem = {
     } else {
       $('mapPanel').style.display = 'block';
       $('combatPanel').style.display = 'none';
+      $('logPanel').style.display = 'none';
     }
 
     document.querySelectorAll('.move-controls button').forEach(b => { if (b) b.disabled = GameState.inCombat; });
