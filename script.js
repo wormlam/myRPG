@@ -60,6 +60,7 @@ function updateUI() {
   $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
   if ($('btnSave')) $('btnSave').disabled = inCombat;
   if ($('btnLoad')) $('btnLoad').disabled = inCombat;
+  if ($('btnBackToMenu')) $('btnBackToMenu').disabled = inCombat;
 }
 
 function getSlotInfo(i) {
@@ -111,6 +112,14 @@ function showSlotModal(mode, fromStart = false) {
 function enterGame() {
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
+}
+
+function backToMenu() {
+  if (inCombat) return;
+  if (!confirm('確定要返回主畫面？未儲存的進度將遺失。')) return;
+  document.getElementById('startScreen').style.display = 'block';
+  document.getElementById('gameScreen').style.display = 'none';
+  $('slotModal').classList.remove('show');
 }
 
 function startFight() {
@@ -234,5 +243,6 @@ $('btnStartGame').onclick = startNewGame;
 $('btnLoadStart').onclick = () => showSlotModal('load', true);
 $('btnSave').onclick = () => showSlotModal('save');
 $('btnLoad').onclick = () => showSlotModal('load', false);
+$('btnBackToMenu').onclick = backToMenu;
 $('btnCloseModal').onclick = () => $('slotModal').classList.remove('show');
 $('slotModal').onclick = (e) => { if (e.target.id === 'slotModal') e.target.classList.remove('show'); };
