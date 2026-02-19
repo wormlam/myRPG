@@ -31,7 +31,7 @@
 function startNewGame() {
   GameState.reset();
   $('log').innerHTML = '';
-  log('歡迎！使用 WASD 移動探索，移動時可能隨機遇敵');
+  log('歡迎！移動探索，移動時可能隨機遇敵');
   UISystem.enterGame();
   UISystem.update();
 }
