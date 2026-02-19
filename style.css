@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', sans-serif;
-  max-width: 740px;
+  max-width: 800px;
   margin: 2rem auto;
   padding: 1rem;
   background: #1a1a2e;
@@ -67,10 +67,10 @@ button:disabled { background: #555; cursor: not-allowed; }
 #gameScreen { display: none; }
 .game-layout {
   display: grid;
-  grid-template-columns: 120px 1fr 140px;
-  grid-template-areas: "menu main player";
+  grid-template-columns: 160px 1fr 160px;
+  grid-template-areas: "player main menu";
   gap: 1rem;
-  max-width: 720px;
+  max-width: 780px;
   margin: 0 auto;
 }
 .sidebar {
@@ -91,6 +91,7 @@ button:disabled { background: #555; cursor: not-allowed; }
 .game-main { grid-area: main; min-width: 0; }
 .player-panel {
   grid-area: player;
+  min-width: 0;
 }
 .player-panel .stats { flex-direction: column; }
 .player-panel .stat { width: 100%; }
