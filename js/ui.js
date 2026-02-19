@@ -28,8 +28,12 @@ const UISystem = {
     }
 
     document.querySelectorAll('.move-controls button').forEach(b => { if (b) b.disabled = GameState.inCombat; });
-    $('btnHeal').disabled = player.gold < 5 || player.hp >= player.maxHp;
-    if ($('btnMenu')) $('btnMenu').disabled = GameState.inCombat;
+    const menuHeal = $('menuHeal');
+    if (menuHeal) menuHeal.disabled = player.gold < 5 || player.hp >= player.maxHp;
+    const menuSave = $('menuSave');
+    const menuLoad = $('menuLoad');
+    if (menuSave) menuSave.disabled = GameState.inCombat;
+    if (menuLoad) menuLoad.disabled = GameState.inCombat;
 
     MapSystem.render();
   },

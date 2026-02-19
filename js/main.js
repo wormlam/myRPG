@@ -18,10 +18,10 @@
   $('btnAttack').onclick = () => CombatSystem.doAttack();
   $('btnDefend').onclick = () => CombatSystem.doDefend();
   $('btnEscape').onclick = () => CombatSystem.doEscape();
-  $('btnHeal').onclick = () => CombatSystem.heal();
   $('btnStartGame').onclick = startNewGame;
   $('btnLoadStart').onclick = () => UISystem.showSlotModal('load', true);
   $('btnMenu').onclick = () => UISystem.showGameMenu();
+  $('menuHeal').onclick = () => { UISystem.hideGameMenu(); CombatSystem.heal(); };
   $('menuSave').onclick = () => { UISystem.hideGameMenu(); UISystem.showSlotModal('save'); };
   $('menuLoad').onclick = () => { UISystem.hideGameMenu(); UISystem.showSlotModal('load', false); };
   $('menuBack').onclick = () => { UISystem.hideGameMenu(); UISystem.backToMenu(); };
