@@ -93,14 +93,20 @@
   </div>
 
   <div class="panel">
+    <button id="btnNewGame">🔄 開始新遊戲</button>
+    <button id="btnSave">💾 儲存</button>
+    <button id="btnLoad">📂 讀取</button>
+  </div>
+
+  <div class="panel">
     <h3>戰鬥紀錄</h3>
     <div id="log"></div>
   </div>
 
   <script>
-    const player = {
-      level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0
-    };
+    const SAVE_KEY = 'myrpg_save';
+    const defaultPlayer = () => ({ level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0 });
+    const player = { ...defaultPlayer() };
     const enemies = [
       { name: '史萊姆', hp: 8, atk: 2, gold: 3, exp: 5 },
       { name: '哥布林', hp: 12, atk: 3, gold: 5, exp: 8 },
@@ -158,6 +164,8 @@
 
       $('btnFight').disabled = inCombat;
       $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
+      $('btnSave').disabled = inCombat;
+      $('btnLoad').disabled = inCombat;
     }
 
     function startFight() {
@@ -213,8 +221,47 @@
       }
     }
 
+    function newGame() {
+      if (inCombat) return;
+      if (!confirm('確定要開始新遊戲？當前進度將遺失。')) return;
+      Object.assign(player, defaultPlayer());
+      enemy = null;
+      inCombat = false;
+      $('log').innerHTML = '';
+      log('開始新冒險！');
+      updateUI();
+    }
+
+    function saveGame() {
+      if (inCombat) return;
+      const data = { player: { ...player }, savedAt: new Date().toLocaleString('zh-TW') };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      log('遊戲已儲存', 'heal');
+      updateUI();
+    }
+
+    function loadGame() {
+      if (inCombat) return;
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) { log('沒有存檔', 'damage'); return; }
+      try {
+        const data = JSON.parse(raw);
+        Object.assign(player, data.player);
+        enemy = null;
+        inCombat = false;
+        $('log').innerHTML = '';
+        log(`已讀取存檔 (${data.savedAt || '未知時間'})`, 'heal');
+        updateUI();
+      } catch (e) {
+        log('讀取存檔失敗', 'damage');
+      }
+    }
+
     $('btnFight').onclick = startFight;
     $('btnHeal').onclick = heal;
+    $('btnNewGame').onclick = newGame;
+    $('btnSave').onclick = saveGame;
+    $('btnLoad').onclick = loadGame;
     updateUI();
     log('歡迎！點擊「戰鬥」開始冒險');
   </script>
