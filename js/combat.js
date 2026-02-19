@@ -73,10 +73,13 @@ const CombatSystem = {
   startFight() {
     if (GameState.inCombat) return;
     const playerLevel = GameState.player.level;
-    const minLv = Math.max(1, playerLevel - 1);
-    const maxLv = playerLevel + 1;
-    const pool = enemies.filter(e => e.level >= minLv && e.level <= maxLv);
-    const count = Math.min(pool.length, Math.floor(Math.random() * 3) + 1);
+    const maxEnemyLv = Math.max(...enemies.map(e => e.level));
+    const minLv = Math.max(1, playerLevel - 2);
+    const maxLv = Math.min(maxEnemyLv, playerLevel + 1);
+    let pool = enemies.filter(e => e.level >= minLv && e.level <= maxLv);
+    if (pool.length === 0) pool = enemies.filter(e => e.level >= maxEnemyLv - 1);
+    if (pool.length === 0) pool = enemies;
+    const count = Math.max(1, Math.min(pool.length, Math.floor(Math.random() * 3) + 2));
     GameState.enemies = [];
     for (let i = 0; i < count; i++) {
       const base = pool[Math.floor(Math.random() * pool.length)];
