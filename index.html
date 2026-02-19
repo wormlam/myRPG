@@ -43,13 +43,21 @@
 
   <div id="combatPanel" class="panel combat-panel" style="display:none">
     <h3>戰鬥指令</h3>
-    <div class="panel" id="enemyPanel">
-      <h3>敵人: <span id="enemyName">史萊姆</span></h3>
-      <div class="stats">
-        <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
-        <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
+    <div class="combat-scene">
+      <div class="combat-sprite combat-enemy" id="enemySprite">
+        <div class="panel sprite-info sprite-info-above">
+          <h3>敵人: <span id="enemyName">史萊姆</span></h3>
+          <div class="stats">
+            <span class="stat">HP: <span id="enemyHp">8</span>/<span id="enemyMaxHp">8</span></span>
+            <span class="stat">攻擊: <span id="enemyAtk">2</span></span>
+          </div>
+          <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
+        </div>
+        <span class="sprite-emoji" id="enemyEmoji">🟢</span>
       </div>
-      <div class="hp-bar"><div class="hp-fill" id="enemyHpBar" style="width:100%;background:#4ecca3"></div></div>
+      <div class="combat-sprite combat-player" id="playerSprite">
+        <span class="sprite-emoji" id="playerEmoji">🧑</span>
+      </div>
     </div>
     <div class="combat-actions">
       <button id="btnAttack">⚔️ 攻擊 (A)</button>

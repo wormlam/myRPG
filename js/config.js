@@ -12,7 +12,8 @@ const defaultPlayer = () => ({
 });
 
 const enemies = [
-  { name: '史萊姆', hp: 8, atk: 2, gold: 3, exp: 5 },
-  { name: '哥布林', hp: 12, atk: 3, gold: 5, exp: 8 },
-  { name: '骷髏兵', hp: 15, atk: 4, gold: 8, exp: 12 }
+  { name: '史萊姆', hp: 8, atk: 2, gold: 3, exp: 5, emoji: '🟢' },
+  { name: '哥布林', hp: 12, atk: 3, gold: 5, exp: 8, emoji: '👺' },
+  { name: '骷髏兵', hp: 15, atk: 4, gold: 8, exp: 12, emoji: '💀' }
 ];
+const PLAYER_EMOJI = '🧑';

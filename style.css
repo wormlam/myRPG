@@ -149,6 +149,54 @@ button:disabled { background: #555; cursor: not-allowed; }
 
 .map-panel { text-align: center; }
 .map-panel .hint { font-size: 0.8rem; color: #888; font-weight: normal; }
+.combat-scene {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  min-height: 120px;
+}
+.combat-sprite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.combat-enemy { align-items: flex-start; }
+.combat-player { align-items: flex-end; }
+.sprite-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.sprite-info { margin-top: 0.5rem; width: 100%; max-width: 140px; }
+.sprite-info-above { margin-top: 0; margin-bottom: 0.5rem; }
+.sprite-info .panel { margin: 0; }
+@keyframes attack-player {
+  0% { transform: translateX(0) scale(1); }
+  50% { transform: translateX(30px) scale(1.1); }
+  100% { transform: translateX(0) scale(1); }
+}
+@keyframes attack-enemy {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.15); }
+  50% { transform: scale(0.95); }
+  75% { transform: scale(1.05); }
+}
+@keyframes defend {
+  0%, 100% { transform: scale(1); box-shadow: none; }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(78, 204, 163, 0.8); }
+}
+@keyframes escape {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(40px) scale(0.9); opacity: 0.7; }
+}
+.combat-sprite.animate-attack .sprite-emoji { animation: attack-player 0.4s ease-out; }
+.combat-enemy.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
+.combat-player.animate-hit .sprite-emoji { animation: attack-enemy 0.4s ease-out; }
+.combat-sprite.animate-defend .sprite-emoji { animation: defend 0.5s ease-out; }
+.combat-sprite.animate-escape .sprite-emoji { animation: escape 0.4s ease-out; }
 .combat-panel .panel { margin: 0.5rem 0; }
 .combat-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
 .combat-actions button { flex: 1; min-width: 80px; }
