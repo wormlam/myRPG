@@ -57,7 +57,11 @@ const CombatSystem = {
 
   startFight() {
     if (GameState.inCombat) return;
-    const base = enemies[Math.floor(Math.random() * enemies.length)];
+    const playerLevel = GameState.player.level;
+    const minLv = Math.max(1, playerLevel - 1);
+    const maxLv = playerLevel + 1;
+    const pool = enemies.filter(e => e.level >= minLv && e.level <= maxLv);
+    const base = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : enemies[0];
     GameState.enemy = { ...base, maxHp: base.hp, def: base.def ?? 0, frozen: false, stunned: 0, burnTurns: 0, burnDmg: 0 };
     GameState.inCombat = true;
     const spellsEl = document.getElementById('combatSpells');
