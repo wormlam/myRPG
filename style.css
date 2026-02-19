@@ -89,13 +89,16 @@ button:disabled { background: #555; cursor: not-allowed; }
   display: flex;
   flex-direction: column;
 }
-.sidebar h3 { margin: 0 0 0.8rem 0; font-size: 1rem; }
+.sidebar, .player-panel {
+  font-size: 0.9rem;
+}
+.sidebar h3, .player-panel h3 { margin: 0 0 0.8rem 0; font-size: 1rem; }
 .sidebar .menu-option {
   display: block;
   width: 100%;
   margin: 0.3rem 0;
   padding: 0.5rem;
-  font-size: 0.85rem;
+  font-size: inherit;
   text-align: left;
 }
 .game-main { grid-area: main; min-width: 0; }
@@ -109,7 +112,7 @@ button:disabled { background: #555; cursor: not-allowed; }
   flex: 1;
 }
 .player-panel .stats { flex-direction: column; }
-.player-panel .stat { width: 100%; }
+.player-panel .stat { width: 100%; font-size: inherit; }
 .player-panel .stat-with-bar { margin: 0.5rem 0; }
 .player-panel .stat-with-bar .stat { display: block; margin-bottom: 0.2rem; }
 .player-panel .stat-with-bar .hp-bar { margin: 0; }
