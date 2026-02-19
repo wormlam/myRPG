@@ -29,7 +29,6 @@ const UISystem = {
       $('logPanel').style.display = 'none';
     }
 
-    document.querySelectorAll('.move-controls button').forEach(b => { if (b) b.disabled = GameState.inCombat; });
     const menuHeal = $('menuHeal');
     if (menuHeal) menuHeal.disabled = player.gold < 5 || player.hp >= player.maxHp;
     const menuSave = $('menuSave');

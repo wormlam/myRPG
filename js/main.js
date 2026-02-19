@@ -11,10 +11,6 @@
 
   window.addEventListener('encounter', () => CombatSystem.startFight());
 
-  $('btnUp').onclick = () => MapSystem.tryMove(0, -1);
-  $('btnDown').onclick = () => MapSystem.tryMove(0, 1);
-  $('btnLeft').onclick = () => MapSystem.tryMove(-1, 0);
-  $('btnRight').onclick = () => MapSystem.tryMove(1, 0);
   $('btnAttack').onclick = () => CombatSystem.doAttack();
   $('btnDefend').onclick = () => CombatSystem.doDefend();
   $('btnEscape').onclick = () => CombatSystem.doEscape();
