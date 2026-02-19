@@ -17,6 +17,7 @@
 
   window.addEventListener('encounter', () => CombatSystem.startFight());
 
+  $('playerNameBtn').onclick = () => $('playerPanel').classList.toggle('expanded');
   $('btnAttack').onclick = () => CombatSystem.doAttack();
   $('btnMagic').onclick = () => CombatSystem.doMagic();
   $('btnDefend').onclick = () => CombatSystem.doDefend();

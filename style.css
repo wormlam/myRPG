@@ -111,6 +111,44 @@ button:disabled { background: #555; cursor: not-allowed; }
 .player-panel .panel {
   flex: 1;
 }
+.player-panel-compact {
+  padding: 0.5rem;
+}
+.player-name-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background: #0f3460;
+  border: 1px solid rgba(233, 69, 96, 0.4);
+  border-radius: 6px;
+  color: #e94560;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.player-name-btn:hover {
+  background: #1a3a6e;
+}
+.player-name-arrow {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+.player-panel-compact.expanded .player-name-arrow {
+  transform: rotate(180deg);
+}
+.player-details {
+  display: none;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.player-panel-compact.expanded .player-details {
+  display: block;
+}
 .player-panel .stats { flex-direction: column; }
 .player-panel .stat { width: 100%; font-size: inherit; }
 .player-panel .stat-with-bar { margin: 0.5rem 0; }
