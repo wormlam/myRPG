@@ -58,9 +58,7 @@ function updateUI() {
 
   $('btnFight').disabled = inCombat;
   $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
-  if ($('btnSave')) $('btnSave').disabled = inCombat;
-  if ($('btnLoad')) $('btnLoad').disabled = inCombat;
-  if ($('btnBackToMenu')) $('btnBackToMenu').disabled = inCombat;
+  if ($('btnMenu')) $('btnMenu').disabled = inCombat;
 }
 
 function getSlotInfo(i) {
@@ -70,6 +68,14 @@ function getSlotInfo(i) {
     const d = JSON.parse(raw);
     return { text: `Lv.${d.player?.level || '?'} | ${d.player?.gold ?? '?'}金 | ${(d.savedAt || '').slice(0, 16)}`, color: '#4ecca3', hasData: true };
   } catch { return { text: '損壞', color: '#e94560', hasData: false }; }
+}
+
+function showGameMenu() {
+  $('gameMenuModal').classList.add('show');
+}
+
+function hideGameMenu() {
+  $('gameMenuModal').classList.remove('show');
 }
 
 function showSlotModal(mode, fromStart = false) {
@@ -120,6 +126,7 @@ function backToMenu() {
   document.getElementById('startScreen').style.display = 'block';
   document.getElementById('gameScreen').style.display = 'none';
   $('slotModal').classList.remove('show');
+  hideGameMenu();
 }
 
 function startFight() {
@@ -238,11 +245,13 @@ function loadAndEnter(slot) {
 
 $('btnFight').onclick = startFight;
 $('btnHeal').onclick = heal;
-$('btnNewGame').onclick = newGame;
 $('btnStartGame').onclick = startNewGame;
 $('btnLoadStart').onclick = () => showSlotModal('load', true);
-$('btnSave').onclick = () => showSlotModal('save');
-$('btnLoad').onclick = () => showSlotModal('load', false);
-$('btnBackToMenu').onclick = backToMenu;
+$('btnMenu').onclick = showGameMenu;
+$('menuSave').onclick = () => { hideGameMenu(); showSlotModal('save'); };
+$('menuLoad').onclick = () => { hideGameMenu(); showSlotModal('load', false); };
+$('menuBack').onclick = () => { hideGameMenu(); backToMenu(); };
+$('btnCloseGameMenu').onclick = hideGameMenu;
+$('gameMenuModal').onclick = (e) => { if (e.target.id === 'gameMenuModal') hideGameMenu(); };
 $('btnCloseModal').onclick = () => $('slotModal').classList.remove('show');
 $('slotModal').onclick = (e) => { if (e.target.id === 'slotModal') e.target.classList.remove('show'); };

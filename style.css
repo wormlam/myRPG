@@ -93,3 +93,5 @@ button:disabled { background: #555; cursor: not-allowed; }
 .modal-slot .slot-info { font-size: 0.9rem; color: #aaa; }
 .modal-slot .slot-action { padding: 0.3rem 0.8rem; font-size: 0.85rem; }
 .modal-close { width: 100%; margin-top: 0.5rem; }
+.menu-options { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.menu-option { width: 100%; text-align: left; padding: 0.8rem 1rem; }
