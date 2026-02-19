@@ -27,6 +27,7 @@ const UISystem = {
       $('enemyHp').textContent = enemy.hp;
       $('enemyMaxHp').textContent = enemy.maxHp;
       $('enemyAtk').textContent = enemy.atk;
+      $('enemyDef').textContent = enemy.def ?? 0;
       const bar = $('enemyHpBar');
       if (bar && enemy.maxHp > 0) {
         const hpPct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));

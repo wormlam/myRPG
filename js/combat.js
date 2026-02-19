@@ -58,7 +58,7 @@ const CombatSystem = {
   startFight() {
     if (GameState.inCombat) return;
     const base = enemies[Math.floor(Math.random() * enemies.length)];
-    GameState.enemy = { ...base, maxHp: base.hp, frozen: false };
+    GameState.enemy = { ...base, maxHp: base.hp, def: base.def ?? 0, frozen: false, stunned: 0, burnTurns: 0, burnDmg: 0 };
     GameState.inCombat = true;
     const spellsEl = document.getElementById('combatSpells');
     if (spellsEl) spellsEl.classList.remove('show');
@@ -75,9 +75,29 @@ const CombatSystem = {
   enemyAttack(defending = false) {
     const { player, enemy } = GameState;
     if (!enemy) return;
+    if (enemy.burnTurns > 0) {
+      enemy.hp -= enemy.burnDmg;
+      enemy.burnTurns--;
+      log(`${enemy.name} 受到燃燒傷害 ${enemy.burnDmg} 點`, 'damage');
+      UISystem.update();
+      if (enemy.hp <= 0) {
+        player.gold += enemy.gold;
+        player.exp += enemy.exp;
+        log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣、${enemy.exp} 經驗`, 'gold');
+        this.checkLevelUp();
+        this.endCombat();
+        return;
+      }
+    }
     if (enemy.frozen) {
       enemy.frozen = false;
       log(`${enemy.name} 被凍結，無法行動！`, 'heal');
+      UISystem.update();
+      return;
+    }
+    if (enemy.stunned > 0) {
+      enemy.stunned--;
+      log(`${enemy.name} 被電擊麻痺，無法行動！`, 'heal');
       UISystem.update();
       return;
     }
@@ -110,7 +130,8 @@ const CombatSystem = {
     hideCombatSpells();
 
     playAnimation('attack', () => {
-      const dmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
+      let dmg = Math.max(1, player.atk - Math.floor(Math.random() * 2));
+      dmg = Math.max(1, dmg - (enemy.def ?? 0));
       enemy.hp -= dmg;
       log(`你攻擊造成 ${dmg} 點傷害`, 'damage');
       UISystem.update();
@@ -170,11 +191,21 @@ const CombatSystem = {
       player.mp -= spell.mp;
       const base = Math.max(1, player.atk - Math.floor(Math.random() * 2));
       let dmg = Math.max(1, Math.floor(base * spell.mult) + Math.floor(Math.random() * (spell.bonus + 1)));
+      if (!spell.ignoreDef) dmg = Math.max(1, dmg - (enemy.def ?? 0));
       enemy.hp -= dmg;
       let msg = `${spell.name} 造成 ${dmg} 點傷害（消耗 ${spell.mp} MP）`;
-      if (spell.freezeChance && Math.random() < spell.freezeChance) {
+      if (spell.dotTurns) {
+        enemy.burnTurns = spell.dotTurns;
+        enemy.burnDmg = spell.dotDmg;
+        msg += '，敵人燃燒中！';
+      }
+      if (spell.freeze) {
         enemy.frozen = true;
         msg += '，敵人被凍結！';
+      }
+      if (spell.stunChance && Math.random() < spell.stunChance) {
+        enemy.stunned = spell.stunTurns;
+        msg += '，敵人被電擊麻痺！';
       }
       log(msg, 'heal');
       UISystem.update();
