@@ -1,5 +1,7 @@
 const SAVE_KEY_PREFIX = 'myrpg_save_';
-const defaultPlayer = () => ({ level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0 });
+const MAP_SIZE = 10;
+const ENCOUNTER_CHANCE = 0.25;
+const defaultPlayer = () => ({ level: 1, exp: 0, hp: 20, maxHp: 20, atk: 5, gold: 0, px: 5, py: 5 });
 const player = { ...defaultPlayer() };
 const enemies = [
   { name: '史萊姆', hp: 8, atk: 2, gold: 3, exp: 5 },
@@ -56,9 +58,37 @@ function updateUI() {
     $('enemyPanel').style.display = 'none';
   }
 
-  $('btnFight').disabled = inCombat;
+  document.querySelectorAll('.move-controls button').forEach(b => { if (b) b.disabled = inCombat; });
   $('btnHeal').disabled = inCombat || player.gold < 5 || player.hp >= player.maxHp;
   if ($('btnMenu')) $('btnMenu').disabled = inCombat;
+  renderMap();
+}
+
+function renderMap() {
+  const grid = $('mapGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (let y = 0; y < MAP_SIZE; y++) {
+    for (let x = 0; x < MAP_SIZE; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'map-cell' + (player.px === x && player.py === y ? ' player' : '');
+      cell.textContent = (player.px === x && player.py === y) ? '🧑' : '';
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function tryMove(dx, dy) {
+  if (inCombat) return;
+  const nx = (player.px ?? 5) + dx;
+  const ny = (player.py ?? 5) + dy;
+  if (nx < 0 || nx >= MAP_SIZE || ny < 0 || ny >= MAP_SIZE) return;
+  player.px = nx;
+  player.py = ny;
+  renderMap();
+  if (Math.random() < ENCOUNTER_CHANCE) {
+    startFight();
+  }
 }
 
 function getSlotInfo(i) {
@@ -195,7 +225,7 @@ function newGame() {
 
 function saveGame(slot) {
   if (inCombat) return;
-  const data = { player: { ...player }, savedAt: new Date().toLocaleString('zh-TW') };
+  const data = { player: { ...player, px: player.px ?? 5, py: player.py ?? 5 }, savedAt: new Date().toLocaleString('zh-TW') };
   localStorage.setItem(SAVE_KEY_PREFIX + slot, JSON.stringify(data));
   log(`已儲存至欄位 ${slot + 1}`, 'heal');
   updateUI();
@@ -208,6 +238,8 @@ function loadGame(slot) {
   try {
     const data = JSON.parse(raw);
     Object.assign(player, data.player);
+    player.px = player.px ?? 5;
+    player.py = player.py ?? 5;
     enemy = null;
     inCombat = false;
     $('log').innerHTML = '';
@@ -223,7 +255,7 @@ function startNewGame() {
   enemy = null;
   inCombat = false;
   $('log').innerHTML = '';
-  log('歡迎！點擊「戰鬥」開始冒險');
+  log('歡迎！使用方向鍵移動探索，移動時可能隨機遇敵');
   enterGame();
   updateUI();
 }
@@ -234,6 +266,8 @@ function loadAndEnter(slot) {
   try {
     const data = JSON.parse(raw);
     Object.assign(player, data.player);
+    player.px = player.px ?? 5;
+    player.py = player.py ?? 5;
     enemy = null;
     inCombat = false;
     $('log').innerHTML = '';
@@ -243,7 +277,18 @@ function loadAndEnter(slot) {
   } catch (e) {}
 }
 
-$('btnFight').onclick = startFight;
+document.addEventListener('keydown', (e) => {
+  if (inCombat) return;
+  if (e.key === 'ArrowUp') { e.preventDefault(); tryMove(0, -1); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); tryMove(0, 1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); tryMove(-1, 0); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); tryMove(1, 0); }
+});
+
+$('btnUp').onclick = () => tryMove(0, -1);
+$('btnDown').onclick = () => tryMove(0, 1);
+$('btnLeft').onclick = () => tryMove(-1, 0);
+$('btnRight').onclick = () => tryMove(1, 0);
 $('btnHeal').onclick = heal;
 $('btnStartGame').onclick = startNewGame;
 $('btnLoadStart').onclick = () => showSlotModal('load', true);
