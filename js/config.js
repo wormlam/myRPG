@@ -3,6 +3,8 @@ const RPG = {
   SAVE_KEY_PREFIX: 'myrpg_save_',
   MAP_SIZE: 10,
   ENCOUNTER_CHANCE: 0.25,
+  ESCAPE_CHANCE: 0.6,
+  DEFEND_DAMAGE_REDUCE: 0.5,
 };
 
 const defaultPlayer = () => ({

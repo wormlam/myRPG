@@ -24,10 +24,31 @@ const CombatSystem = {
     GameState.inCombat = true;
     log(`遇到 ${GameState.enemy.name}！`, 'damage');
     UISystem.update();
-    this.combatTurn();
   },
 
-  combatTurn() {
+  endCombat() {
+    GameState.enemy = null;
+    GameState.inCombat = false;
+    UISystem.update();
+  },
+
+  enemyAttack(defending = false) {
+    const { player, enemy } = GameState;
+    if (!enemy) return;
+    let dmg = Math.max(1, enemy.atk - Math.floor(Math.random() * 2));
+    if (defending) dmg = Math.max(1, Math.floor(dmg * (1 - RPG.DEFEND_DAMAGE_REDUCE)));
+    player.hp -= dmg;
+    log(`${enemy.name} 攻擊造成 ${dmg} 點傷害`, 'damage');
+    if (player.hp <= 0) {
+      player.hp = 0;
+      log('你被擊敗了！遊戲結束', 'damage');
+      this.endCombat();
+    } else {
+      UISystem.update();
+    }
+  },
+
+  doAttack() {
     const { player, enemy } = GameState;
     if (!enemy || player.hp <= 0) return;
 
@@ -40,36 +61,41 @@ const CombatSystem = {
       player.exp += enemy.exp;
       log(`擊敗 ${enemy.name}！獲得 ${enemy.gold} 金幣、${enemy.exp} 經驗`, 'gold');
       this.checkLevelUp();
-      GameState.enemy = null;
-      GameState.inCombat = false;
-      UISystem.update();
+      this.endCombat();
       return;
     }
 
-    const enemyDmg = Math.max(1, enemy.atk - Math.floor(Math.random() * 2));
-    player.hp -= enemyDmg;
-    log(`${enemy.name} 攻擊造成 ${enemyDmg} 點傷害`, 'damage');
+    this.enemyAttack(false);
+  },
 
-    if (player.hp <= 0) {
-      player.hp = 0;
-      log('你被擊敗了！遊戲結束', 'damage');
-      GameState.enemy = null;
-      GameState.inCombat = false;
-      UISystem.update();
-      return;
+  doDefend() {
+    const { player, enemy } = GameState;
+    if (!enemy || player.hp <= 0) return;
+
+    log('你採取防禦姿態', 'heal');
+    this.enemyAttack(true);
+  },
+
+  doEscape() {
+    const { enemy } = GameState;
+    if (!enemy) return;
+
+    if (Math.random() < RPG.ESCAPE_CHANCE) {
+      log('成功逃脫！', 'heal');
+      this.endCombat();
+    } else {
+      log('逃跑失敗！', 'damage');
+      this.enemyAttack(false);
     }
-
-    UISystem.update();
-    setTimeout(() => this.combatTurn(), 800);
   },
 
   heal() {
     const { player } = GameState;
-    if (player.gold >= 5 && player.hp < player.maxHp && !GameState.inCombat) {
+    if (player.gold >= 5 && player.hp < player.maxHp && GameState.inCombat) {
       player.gold -= 5;
       player.hp = Math.min(player.maxHp, player.hp + 10);
       log('治療恢復 10 HP', 'heal');
-      UISystem.update();
+      this.enemyAttack(false);
     }
   }
 };
