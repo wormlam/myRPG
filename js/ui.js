@@ -76,7 +76,7 @@ const UISystem = {
 
   enterGame() {
     document.getElementById('startScreen').style.display = 'none';
-    document.getElementById('gameScreen').style.display = 'grid';
+    document.getElementById('gameScreen').style.display = 'block';
   },
 
   backToMenu() {
