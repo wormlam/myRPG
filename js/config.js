@@ -16,7 +16,7 @@ const SPELLS = [
 ];
 
 const defaultPlayer = () => ({
-  level: 1, exp: 0, hp: 20, maxHp: 20, mp: 10, maxMp: 10, atk: 5, gold: 0, px: 5, py: 5
+  level: 1, exp: 0, hp: 20, maxHp: 20, mp: 10, maxMp: 10, atk: 5, def: 0, gold: 0, px: 5, py: 5
 });
 
 const enemies = [

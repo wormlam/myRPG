@@ -48,9 +48,10 @@ const CombatSystem = {
       player.maxHp += 5;
       player.maxMp += 3;
       player.atk += 2;
+      player.def += 1;
       player.hp = player.maxHp;
       player.mp = player.maxMp;
-      log(`🎉 升級！Lv.${player.level} - HP+5、MP+3、攻擊+2、HP/MP 全滿`, 'levelup');
+      log(`🎉 升級！Lv.${player.level} - HP+5、MP+3、攻擊+2、防禦+1、HP/MP 全滿`, 'levelup');
       if (player.exp >= this.getExpNeed()) this.checkLevelUp();
     }
   },
@@ -114,6 +115,7 @@ const CombatSystem = {
       setTimeout(() => {
         playerSprite.classList.remove('animate-hit');
         let dmg = Math.max(1, enemy.atk - Math.floor(Math.random() * 2));
+        dmg = Math.max(1, dmg - (player.def ?? 0));
         if (defending) dmg = Math.max(1, Math.floor(dmg * (1 - RPG.DEFEND_DAMAGE_REDUCE)));
         player.hp -= dmg;
         log(`${enemy.name} 攻擊造成 ${dmg} 點傷害`, 'damage');

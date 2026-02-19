@@ -8,6 +8,7 @@ const UISystem = {
     $('playerHp').textContent = player.hp;
     $('playerMaxHp').textContent = player.maxHp;
     $('playerAtk').textContent = player.atk;
+    $('playerDef').textContent = player.def ?? 0;
     $('gold').textContent = player.gold;
     $('playerExp').textContent = player.exp;
     $('playerExpNeed').textContent = expNeed;
@@ -39,6 +40,7 @@ const UISystem = {
       $('combatPlayerMp').textContent = player.mp ?? 0;
       $('combatPlayerMaxMp').textContent = player.maxMp ?? 10;
       $('combatPlayerAtk').textContent = player.atk;
+      $('combatPlayerDef').textContent = player.def ?? 0;
       const pHpBar = $('combatPlayerHpBar');
       if (pHpBar && player.maxHp > 0) {
         pHpBar.style.setProperty('width', Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100)) + '%', 'important');
