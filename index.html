@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>簡易 RPG</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="startScreen">
@@ -17,39 +17,66 @@
   <h1 class="game-title">簡易 RPG</h1>
   <div class="game-layout">
   <aside class="player-panel">
-    <div class="panel player-panel-compact" id="playerPanel">
-      <div class="player-gold">
-        <span class="gold-label">金幣</span>
-        <span class="gold-value" id="gold">0</span>
+    <div class="panel player-panel-compact">
+      <div class="panel-section">
+        <h4 class="panel-header">持有物</h4>
+        <div class="player-gold">
+          <span class="gold-label">金幣</span>
+          <span class="gold-value" id="gold">0</span>
+        </div>
+        <button type="button" class="panel-btn" id="btnItems">物品</button>
       </div>
-      <button type="button" class="player-name-btn" id="playerNameBtn" title="點擊顯示角色資訊">
-        <span class="player-name-text">冒險者</span>
-        <span class="player-name-arrow">▼</span>
-      </button>
-      <div class="player-details" id="playerDetails">
-        <div class="stats">
-          <span class="stat">Lv.<span id="playerLevel">1</span></span>
-          <span class="stat">攻擊: <span id="playerAtk">5</span></span>
-          <span class="stat">防禦: <span id="playerDef">0</span></span>
+      <div class="panel-section">
+        <h4 class="panel-header">隊伍</h4>
+        <div class="player-card" id="playerPanel">
+          <button type="button" class="player-card-header" id="playerNameBtn" title="點擊展開/收合">
+            <span class="player-card-name">冒險者</span>
+            <span class="player-card-arrow">▼</span>
+          </button>
+          <div class="player-card-actions">
+            <button type="button" class="panel-btn panel-btn-compact" id="btnAllocate">分配能力</button>
+          </div>
+          <div class="player-card-body" id="playerDetails">
+            <div class="ability-row">
+              <span class="ability-label">Lv.</span>
+              <span class="ability-value" id="playerLevel">1</span>
+            </div>
+            <div class="ability-row">
+              <span class="ability-label">攻擊</span>
+              <span class="ability-value" id="playerAtk">5</span>
+            </div>
+            <div class="ability-row">
+              <span class="ability-label">魔力</span>
+              <span class="ability-value" id="playerMag">5</span>
+            </div>
+            <div class="ability-row">
+              <span class="ability-label">防禦</span>
+              <span class="ability-value" id="playerDef">0</span>
+            </div>
+            <div class="ability-row stat-with-bar">
+              <span class="ability-label">HP</span>
+              <span class="ability-value"><span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
+              <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
+            </div>
+            <div class="ability-row stat-with-bar">
+              <span class="ability-label">MP</span>
+              <span class="ability-value"><span id="playerMp">10</span>/<span id="playerMaxMp">10</span></span>
+              <div class="hp-bar"><div class="hp-fill" id="playerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
+            </div>
+            <div class="ability-row stat-with-bar">
+              <span class="ability-label">經驗</span>
+              <span class="ability-value"><span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
+              <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
+            </div>
+          </div>
         </div>
-        <div class="stat-with-bar">
-          <span class="stat">HP: <span id="playerHp">20</span>/<span id="playerMaxHp">20</span></span>
-          <div class="hp-bar"><div class="hp-fill" id="playerHpBar" style="width:100%"></div></div>
-        </div>
-        <div class="stat-with-bar">
-          <span class="stat">MP: <span id="playerMp">10</span>/<span id="playerMaxMp">10</span></span>
-          <div class="hp-bar"><div class="hp-fill" id="playerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
-        </div>
-        <div class="stat-with-bar">
-          <span class="stat">經驗: <span id="playerExp">0</span>/<span id="playerExpNeed">10</span></span>
-          <div class="hp-bar"><div class="hp-fill" id="playerExpBar" style="width:0%;background:linear-gradient(90deg,#4ecca3,#2ecc71)"></div></div>
-        </div>
+        <div class="party-list" id="partyList"></div>
       </div>
     </div>
   </aside>
   <main class="game-main">
   <div id="mapPanel" class="panel map-panel">
-    <h3>地圖</h3>
+    <h3>地圖 <span id="mapName" class="map-name"></span></h3>
     <div id="mapGrid" class="map-grid"></div>
     <p class="move-hint">移動：方向鍵或 WASD｜戰鬥：Z 攻擊 X 魔法 C 防禦 V 逃跑｜魔法顯示後按 1-5 選擇</p>
   </div>
@@ -59,18 +86,24 @@
     <p class="target-hint" id="targetHint" style="display:none;color:#ffd700;font-size:0.9rem;margin:0.3rem 0"></p>
     <div class="combat-scene">
       <div class="enemies-container" id="enemiesContainer"></div>
-      <div class="combat-sprite combat-player" id="playerSprite">
-        <div class="player-nameplate">
-          <span class="nameplate-name" id="combatPlayerName">冒險者</span>
-          <span class="nameplate-stats">HP <span id="combatPlayerHp">20</span>/<span id="combatPlayerMaxHp">20</span> · MP <span id="combatPlayerMp">10</span>/<span id="combatPlayerMaxMp">10</span> · 攻 <span id="combatPlayerAtk">5</span> 防 <span id="combatPlayerDef">0</span></span>
+      <div class="combat-party" id="combatParty">
+        <div class="combat-sprite combat-player" id="playerSprite">
+          <div class="player-nameplate">
+            <span class="nameplate-name" id="combatPlayerName">冒險者</span>
+            <span class="nameplate-stats-row1">HP <span id="combatPlayerHp">20</span>/<span id="combatPlayerMaxHp">20</span> · MP <span id="combatPlayerMp">10</span>/<span id="combatPlayerMaxMp">10</span></span>
+            <div class="player-bars-row">
+              <div class="player-hp-bar">
+                <div class="hp-bar"><div class="hp-fill" id="combatPlayerHpBar" style="width:100%"></div></div>
+              </div>
+              <div class="player-mp-bar">
+                <div class="hp-bar"><div class="hp-fill" id="combatPlayerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
+              </div>
+            </div>
+            <span class="nameplate-stats-row2">攻 <span id="combatPlayerAtk">5</span> 魔 <span id="combatPlayerMag">5</span> 防 <span id="combatPlayerDef">0</span></span>
+          </div>
+          <span class="sprite-emoji" id="playerEmoji">🧑</span>
         </div>
-        <div class="player-hp-bar">
-          <div class="hp-bar"><div class="hp-fill" id="combatPlayerHpBar" style="width:100%"></div></div>
-        </div>
-        <div class="player-mp-bar">
-          <div class="hp-bar"><div class="hp-fill" id="combatPlayerMpBar" style="width:100%;background:linear-gradient(90deg,#9b59b6,#8e44ad)"></div></div>
-        </div>
-        <span class="sprite-emoji" id="playerEmoji">🧑</span>
+        <div class="party-companions" id="partyCompanions"></div>
       </div>
     </div>
     <div class="combat-actions">
@@ -78,14 +111,9 @@
       <button id="btnMagic">✨ 魔法 (X)</button>
       <button id="btnDefend">🛡️ 防禦 (C)</button>
       <button id="btnEscape">🏃 逃跑 (V)</button>
-      <button id="btnCancelTarget" class="cancel-target" style="display:none">取消選擇</button>
     </div>
     <div class="combat-spells" id="combatSpells">
-      <button class="spell-btn" id="spellFireball" data-spell="fireball" title="Lv.1 火球術 3MP">🔥 火球術 (1)</button>
-      <button class="spell-btn" id="spellIcearrow" data-spell="icearrow" title="Lv.2 冰箭術 2MP">❄️ 冰箭術 (2)</button>
-      <button class="spell-btn" id="spellThunder" data-spell="thunder" title="Lv.3 雷擊術 4MP">⚡ 雷擊術 (3)</button>
-      <button class="spell-btn" id="spellRockbreak" data-spell="rockbreak" title="Lv.4 破岩術 5MP">🪨 破岩術 (4)</button>
-      <button class="spell-btn" id="spellHeal" data-spell="heal" title="Lv.2 治癒術 5MP">💚 治癒術 (5)</button>
+      <div class="spell-list-wrap" style="max-height:120px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:4px" id="spellListWrap"></div>
     </div>
   </div>
 
@@ -94,14 +122,47 @@
     <div id="log"></div>
   </div>
   </main>
-  <aside class="sidebar">
+  <aside class="sidebar" id="gameMenu">
     <h3>選單</h3>
-    <button class="menu-option" id="menuHeal">💚 治療 (5金)</button>
+    <button class="menu-option" id="menuHeal">💚 治療</button>
     <button class="menu-option" id="menuSave">💾 儲存</button>
     <button class="menu-option" id="menuLoad">📂 讀取</button>
     <button class="menu-option" id="menuBack">🏠 返回主畫面</button>
   </aside>
   </div>
+  </div>
+
+  <div id="gatekeeperModal" class="modal">
+    <div class="modal-content">
+      <h3>守門人</h3>
+      <p id="gatekeeperMsg" class="gatekeeper-msg"></p>
+      <div class="gatekeeper-btns">
+        <button id="btnChallengeGatekeeper">⚔️ 挑戰</button>
+        <button id="btnCancelGatekeeper">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameOverModal" class="modal">
+    <div class="modal-content gameover-content">
+      <h3>💀 GAME OVER</h3>
+      <p class="gameover-msg">你被擊敗了！</p>
+      <div class="gameover-btns">
+        <button id="btnGameOverLoad">📂 讀取存檔</button>
+        <button id="btnGameOverMenu">🏠 返回主畫面</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="recruitModal" class="modal">
+    <div class="modal-content">
+      <h3>招募隊友</h3>
+      <p id="recruitMsg" class="recruit-msg"></p>
+      <div class="recruit-btns">
+        <button id="btnRecruit">招募 (<span id="recruitCost">0</span> 金)</button>
+        <button id="btnRejectRecruit">放棄</button>
+      </div>
+    </div>
   </div>
 
   <div id="slotModal" class="modal">
@@ -112,13 +173,70 @@
     </div>
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/map.js"></script>
-  <script src="js/combat.js"></script>
-  <script src="js/save.js"></script>
-  <script src="js/ui.js"></script>
+  <div id="inventoryModal" class="modal">
+    <div class="modal-content">
+      <h3>持有物品</h3>
+      <div class="inventory-list" id="inventoryList"></div>
+      <button class="modal-close" id="btnCloseInventory">關閉</button>
+    </div>
+  </div>
+
+  <div id="spellModal" class="modal">
+    <div class="modal-content spell-modal-content">
+      <h3>✨ 魔法／技能</h3>
+      <p class="spell-modal-hint" id="spellModalHint">按 1-9 選擇種類，或直接點擊技能</p>
+      <div class="spell-modal-body">
+        <div class="spell-categories" id="spellCategories"></div>
+        <div class="spell-list-by-cat" id="spellListByCat"></div>
+      </div>
+      <button class="modal-close" id="btnCloseSpellModal">關閉 (ESC)</button>
+    </div>
+  </div>
+
+  <div id="abilityModal" class="modal">
+    <div class="modal-content">
+      <h3>分配能力</h3>
+      <p class="ability-modal-hint">升級獲得 4 點，可自由分配至攻、魔、防</p>
+      <div class="ability-allocate-row">
+        <span class="ability-label">可分配點數</span>
+        <span class="ability-value" id="abilityPointsVal">0</span>
+      </div>
+      <div class="ability-allocate-row" style="color:#888;font-size:0.85rem">
+        <span id="abilityCurrentStats">目前：攻 5 魔 5 防 0</span>
+      </div>
+      <div class="ability-allocate-row">
+        <span class="ability-label">攻擊</span>
+        <span class="ability-value" id="allocAtkVal">0</span>
+        <button type="button" class="ability-btn" id="btnAtkPlus" title="+1 攻擊">+</button>
+      </div>
+      <div class="ability-allocate-row">
+        <span class="ability-label">魔力</span>
+        <span class="ability-value" id="allocMagVal">0</span>
+        <button type="button" class="ability-btn" id="btnMagPlus" title="+1 魔力">+</button>
+      </div>
+      <div class="ability-allocate-row">
+        <span class="ability-label">防禦</span>
+        <span class="ability-value" id="allocDefVal">0</span>
+        <button type="button" class="ability-btn" id="btnDefPlus" title="+1 防禦">+</button>
+      </div>
+      <div class="ability-allocate-row">
+        <button type="button" class="panel-btn" id="btnAbilityReset">重置（花費 已分配×5 金幣）</button>
+      </div>
+      <button class="modal-close" id="btnCloseAbility">關閉</button>
+    </div>
+  </div>
+
+  <script src="js/core/config.js"></script>
+  <script src="js/data/items.js"></script>
+  <script src="js/data/spells.js"></script>
+  <script src="js/data/world.js"></script>
+  <script src="js/data/enemies.js"></script>
+  <script src="js/utils/dom.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/systems/map.js"></script>
+  <script src="js/systems/combat.js"></script>
+  <script src="js/systems/save.js"></script>
+  <script src="js/ui/ui.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
